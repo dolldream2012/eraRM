@@ -7,4 +7,5 @@ global.parm = require('./lib/Parameter.js');
 // page.title.init();
 
 // ----- test -----
+char.newChar();
 char.getCharList();

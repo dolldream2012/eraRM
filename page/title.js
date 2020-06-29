@@ -4,10 +4,10 @@ module.exports = {
 	// 初始化
 	init: function () {
 		util.pl();
-		util.log("era Maou EX 0.90");
+		util.log("eraRM 0.0.01");
 		util.pl();
-		util.log("[0] 舊的奴隸");
-		util.log("[1] 新的獵物");
+		util.log("[0] 舊的故事");
+		util.log("[1] 新的冒險");
 
 		util.getCode(this.exeCode);
 	},
