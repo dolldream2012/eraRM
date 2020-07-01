@@ -13,7 +13,8 @@ const model = {
 	, skill: {}	// 持有技能(等級、經驗、機率)
 };
 
-module.exports = {
+// 種族列表
+const race_data = {
 	// 0 ~ 999 古族
 	0000: Object.assign({}, model, { name: "古族", gender: [0, 100, 0, 0] }),
 	0990: Object.assign({}, model, { name: "威爾德", rate: 20, gender: [10, 10, 40, 40] }),
@@ -49,4 +50,20 @@ module.exports = {
 
 		}
 	}),
+}
+
+module.exports = {
+	// 回傳種族資料
+	getData: function (race_no, item) {
+		if (item == null) {
+			return JSON.parse(JSON.stringify(race_data[race_no]));
+		} else {
+			return race_data[race_no][item];
+		}
+	},
+
+	// 確認是否為有效的種族編號
+	contains: function (race_no) {
+		return (race_data[race_no]);
+	},
 }

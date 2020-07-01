@@ -1,4 +1,4 @@
-module.exports = {
+const char_name = {
 	// 女性名
 	gender_2: [
 		"瑪麗",
@@ -1049,4 +1049,21 @@ module.exports = {
 	// 指定種族性別名
 	race_X_X: [
 	],
+}
+module.exports = {
+	getData: function (gender, ...race) {
+		for (var race_no of race) {
+			if (gender != null && char_name["race_" + race_no + "_" + gender]) {
+				return char_name["race_" + race_no + "_" + gender];
+			} else if (char_name["race_" + race_no]) {
+				return char_name["race_" + race_no];
+			}
+		}
+
+		if (char_name["gender_" + gender]) {
+			return char_name["gender_" + gender];
+		} else {
+			return [...char_name["gender_2"], ...char_name["gender_3"]];
+		}
+	}
 }

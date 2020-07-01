@@ -39,11 +39,13 @@ const model = {
 	, favorite: []	// 喜好物品
 };
 
-module.exports = {
+// 角色列表
+const char_data = {
 	// 角色模版
 	0: Object.assign({}, model, {
 		random_skill: true
 	}),
+
 	// 緹亞
 	1: Object.assign({}, model, {
 		name: "緹亞"
@@ -55,4 +57,10 @@ module.exports = {
 			6: { "level": 1 }	// 嬌小
 		}
 	}),
+}
+
+module.exports = {
+	getData: function (char_no) {
+		return JSON.parse(JSON.stringify(char_data[char_no] || char_data[0]));	// 深拷貝以避免更動到原資料；如果查無角色資料，回傳角色模板
+	}
 }

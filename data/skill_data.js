@@ -19,7 +19,8 @@ const model = {
 	, enable: 9	// 技能開關(0: 關閉, 1: 啟動, 8: 禁止關閉, 9: 禁止啟動)
 }
 
-module.exports = {
+// 技能列表
+const skill_data = {
 	// 0 ~ 8999 特徵
 	00000: Object.assign({}, model, { name: "矮" }),
 	00001: Object.assign({}, model, { name: "高" }),
@@ -211,5 +212,21 @@ module.exports = {
 	// 40000 ~ 49999 經歷
 	40000: {	// 未處理
 		40000: Object.assign({}, model, { name: "初心者" }),
+	},
+}
+
+module.exports = {
+	// 回傳技能資料
+	getData: function (skill_no, item) {
+		if (item == null) {
+			return JSON.parse(JSON.stringify(skill_data[skill_no]));
+		} else {
+			return skill_data[skill_no][item];
+		}
+	},
+
+	// 確認是否為有效的技能編號
+	contains: function (race_no) {
+		return (race_data[race_no]);
 	},
 }
