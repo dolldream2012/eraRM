@@ -42,17 +42,17 @@ const skill_data = {
 	// 0051: Object.assign({}, model, { name: "角" }),
 
 	// 2000 特徵(性相關)
-	// 2030: Object.assign({}, model, { name: "白虎" }),
-	// 2031: Object.assign({}, model, { name: "未熟" }),
-	// 2032: Object.assign({}, model, { name: "絕壁" }),
-	// 2033: Object.assign({}, model, { name: "貧乳" }),
-	// 2034: Object.assign({}, model, { name: "巨乳" }),
-	// 2035: Object.assign({}, model, { name: "爆乳" }),
-	// 2036: Object.assign({}, model, { name: "魔乳" }),
+	2030: Object.assign({}, model, { name: "白虎", type: 0, action: [8, 9] }),
+	2031: Object.assign({}, model, { name: "未熟", type: 0, action: [8, 9] }),
+	2032: Object.assign({}, model, { name: "絕壁", type: 0, action: [8, 9], skill_f: [2033, 2034, 2035, 2036], flag: { "gender": "==2" } }),
+	2033: Object.assign({}, model, { name: "貧乳", type: 0, action: [8, 9], skill_f: [2032, 2034, 2035, 2036], flag: { "gender": "==2" } }),
+	2034: Object.assign({}, model, { name: "巨乳", type: 0, action: [8, 9], skill_f: [2032, 2033, 2035, 2036], flag: { "gender": "==2" } }),
+	2035: Object.assign({}, model, { name: "爆乳", type: 0, action: [8, 9], skill_f: [2032, 2033, 2034, 2036], flag: { "gender": "==2" } }),
+	2036: Object.assign({}, model, { name: "魔乳", type: 0, action: [8, 9], skill_f: [2032, 2033, 2034, 2035], flag: { "gender": "==2" } }),
 
 	// 3000 ~ 5999 體質
-	// 3000: Object.assign({}, model, { name: "害怕疼痛" }),
-	// 3001: Object.assign({}, model, { name: "不怕疼痛" }),
+	3000: Object.assign({}, model, { name: "害怕疼痛", type: 0, action: [8, 9], skill_f: [3001] }),
+	3001: Object.assign({}, model, { name: "不怕疼痛", type: 0, action: [8, 9], skill_f: [3000] }),
 	// 3002: Object.assign({}, model, { name: "喜歡疼痛" }),
 	// 3500: Object.assign({}, model, { name: "抗藥性" }),
 	// 3500: Object.assign({}, model, { name: "藥人" }),

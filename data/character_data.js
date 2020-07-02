@@ -56,9 +56,7 @@ const char_data = {
 		, age: 10
 		, age_t: "不明"
 		, race: [3001, 5990, 6800]
-		, skill: {
-			6: { "level": 1 }	// 嬌小
-		}
+		, skill: [6]
 	}),
 }
 
