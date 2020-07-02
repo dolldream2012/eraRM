@@ -1052,7 +1052,7 @@ const char_name = {
 }
 module.exports = {
 	getData: function (gender, ...race) {
-		for (var race_no of race) {
+		for (let race_no of race) {
 			if (gender != null && char_name["race_" + race_no + "_" + gender]) {
 				return char_name["race_" + race_no + "_" + gender];
 			} else if (char_name["race_" + race_no]) {
