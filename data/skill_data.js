@@ -9,7 +9,7 @@ const util = require('../lib/Util.js');	// test
 const model = {
 	name: ""	// 技能名稱
 	, type: ""	// 類型(0: 特徵, 1:被動, 2: 攻擊, 3: 輔助, 8: 經歷, 9: 個性)
-	, action: []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 創建角色, 10: 天賦轉化)
+	, action: []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 天賦轉化)
 	, type_sub: []	// 子類型(技能判定用)(1: 正面性格, 2: 負面性格)
 	, max_lv: 1	// 技能等級上限
 	, up_list: []	// 上位技能
@@ -22,37 +22,37 @@ const model = {
 	, effect: {}	// 效果
 	, exp: []	// 升級所需經驗
 	, enable: 9	// 技能開關(0: 關閉, 1: 啟動, 8: 禁止關閉, 9: 禁止啟動)
-}
+};
 
 // 技能列表
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	0000: Object.assign({}, model, { name: "矮", type: 0, action: [9], up_list: [6], skill_f: [1] }),
-	0001: Object.assign({}, model, { name: "高", type: 0, action: [9], up_list: [7], skill_f: [0] }),
-	0002: Object.assign({}, model, { name: "瘦", type: 0, action: [9], up_list: [6], skill_f: [3] }),
-	0003: Object.assign({}, model, { name: "胖", type: 0, action: [9], skill_f: [2] }),
-	0004: Object.assign({}, model, { name: "瘦弱", type: 0, action: [9], skill_f: [3, 5] }),
-	0005: Object.assign({}, model, { name: "強壯", type: 0, action: [9], up_list: [7], skill_f: [4] }),
-	0006: Object.assign({}, model, { name: "嬌小", type: 0, action: [9], skill_f: [1, 3, 7], flag: { "skill": "0^==1&2^==1", "gender": "2" } }),
-	0007: Object.assign({}, model, { name: "魁梧", type: 0, action: [9], skill_f: [0, 2, 4, 6], flag: { "skill": "1^==1&5^==1" } }),
+	0000: Object.assign({}, model, { name: "矮", type: 0, action: [], up_list: [6], skill_f: [1] }),
+	0001: Object.assign({}, model, { name: "高", type: 0, action: [], up_list: [7], skill_f: [0] }),
+	0002: Object.assign({}, model, { name: "瘦", type: 0, action: [], up_list: [6], skill_f: [3] }),
+	0003: Object.assign({}, model, { name: "胖", type: 0, action: [], skill_f: [2] }),
+	0004: Object.assign({}, model, { name: "瘦弱", type: 0, action: [], skill_f: [3, 5] }),
+	0005: Object.assign({}, model, { name: "強壯", type: 0, action: [], up_list: [7], skill_f: [4] }),
+	0006: Object.assign({}, model, { name: "嬌小", type: 0, action: [], skill_f: [1, 3, 7], flag: { "skill": "0^==1&2^==1", "gender": "2" } }),
+	0007: Object.assign({}, model, { name: "魁梧", type: 0, action: [], skill_f: [0, 2, 4, 6], flag: { "skill": "1^==1&5^==1" } }),
 
 	// 50 ~ 特徵
 	// 0050: Object.assign({}, model, { name: "獸耳" }),
 	// 0051: Object.assign({}, model, { name: "角" }),
 
 	// 2000 特徵(性相關)
-	2030: Object.assign({}, model, { name: "白虎", type: 0, action: [8, 9] }),
-	2031: Object.assign({}, model, { name: "未熟", type: 0, action: [8, 9] }),
-	2032: Object.assign({}, model, { name: "絕壁", type: 0, action: [8, 9], skill_f: [2033, 2034, 2035, 2036], flag: { "gender": "==2" } }),
-	2033: Object.assign({}, model, { name: "貧乳", type: 0, action: [8, 9], skill_f: [2032, 2034, 2035, 2036], flag: { "gender": "==2" } }),
-	2034: Object.assign({}, model, { name: "巨乳", type: 0, action: [8, 9], skill_f: [2032, 2033, 2035, 2036], flag: { "gender": "==2" } }),
-	2035: Object.assign({}, model, { name: "爆乳", type: 0, action: [8, 9], skill_f: [2032, 2033, 2034, 2036], flag: { "gender": "==2" } }),
-	2036: Object.assign({}, model, { name: "魔乳", type: 0, action: [8, 9], skill_f: [2032, 2033, 2034, 2035], flag: { "gender": "==2" } }),
+	2030: Object.assign({}, model, { name: "白虎", type: 0, action: [8] }),
+	2031: Object.assign({}, model, { name: "未熟", type: 0, action: [8] }),
+	2032: Object.assign({}, model, { name: "絕壁", type: 0, action: [8], skill_f: [2033, 2034, 2035, 2036], flag: { "gender": "==2" } }),
+	2033: Object.assign({}, model, { name: "貧乳", type: 0, action: [8], skill_f: [2032, 2034, 2035, 2036], flag: { "gender": "==2" } }),
+	2034: Object.assign({}, model, { name: "巨乳", type: 0, action: [8], skill_f: [2032, 2033, 2035, 2036], flag: { "gender": "==2" } }),
+	2035: Object.assign({}, model, { name: "爆乳", type: 0, action: [8], skill_f: [2032, 2033, 2034, 2036], flag: { "gender": "==2" } }),
+	2036: Object.assign({}, model, { name: "魔乳", type: 0, action: [8], skill_f: [2032, 2033, 2034, 2035], flag: { "gender": "==2" } }),
 
 	// 3000 ~ 5999 體質
-	3000: Object.assign({}, model, { name: "害怕疼痛", type: 0, action: [8, 9], skill_f: [3001] }),
-	3001: Object.assign({}, model, { name: "不怕疼痛", type: 0, action: [8, 9], skill_f: [3000] }),
+	3000: Object.assign({}, model, { name: "害怕疼痛", type: 0, action: [8], skill_f: [3001] }),
+	3001: Object.assign({}, model, { name: "不怕疼痛", type: 0, action: [8], skill_f: [3000] }),
 	// 3002: Object.assign({}, model, { name: "喜歡疼痛" }),
 	// 3500: Object.assign({}, model, { name: "抗藥性" }),
 	// 3500: Object.assign({}, model, { name: "藥人" }),
@@ -134,7 +134,7 @@ const skill_data = {
 	// 9048: Object.assign({}, model, { name: "慈愛" }),
 	// 9049: Object.assign({}, model, { name: "善妒" }),
 	// 9050: Object.assign({}, model, { name: "樂於分享" }),
-	// 9051: Object.assign({}, model, { name: "小惡魔" }),
+	// 9051: Object.assign({}, model, { name: "調皮" }),
 	// 9052: Object.assign({}, model, { name: "老實" }),
 	// 9053: Object.assign({}, model, { name: "自信" }),
 	// 9054: Object.assign({}, model, { name: "自我懷疑" }),
@@ -227,13 +227,19 @@ const skill_data = {
 	// 42001: Object.assign({}, model, { name: "育兒中" }),
 
 	// 43000 ~ 45999 經歷(性相關)
-	46000: Object.assign({}, model, { name: "處女", type: 8, action: [8, 9] }),
-	46001: Object.assign({}, model, { name: "童貞", type: 8, action: [8, 9] }),
+	46000: Object.assign({}, model, { name: "處女", type: 8, action: [8] }),
+	46001: Object.assign({}, model, { name: "童貞", type: 8, action: [8] }),
 
 	// 46000 ~ 48999 稱號
 	// 49000 ~ 49999 稱號(性相關)
 	// 49000: Object.assign({}, model, { name: "牝犬" }),
-}
+};
+
+// 起始技能及獲得機率列表
+const base_skill_data = [
+	{ flag: { "gender": "==2" }, skill_rate: { 40: [46000] } },	// 處女
+	{ flag: { "gender": "==3" }, skill_rate: { 40: [46001] } },	// 童貞
+]
 
 module.exports = {
 	// 回傳技能資料
@@ -248,6 +254,11 @@ module.exports = {
 	// 確認是否為有效的技能編號
 	contains: function (skill_no) {
 		return (skill_data[skill_no]);
+	},
+
+	// 取得起始技能列表
+	getBaseData: function () {
+		return base_skill_data;
 	},
 
 	// 取得指定用途技能列表
@@ -314,17 +325,19 @@ module.exports = {
 		}
 	},
 
-	// 檢查可否獲得技能／是否滿足技能升級條件: 角色資料, 上位技能編號
-	chkEnableSkill: function (char, skill_no) {
-		if (skill_data[skill_no] == null) return false;
+	// 檢查可否獲得技能／是否滿足技能升級條件: 角色資料, 技能編號
+	chkEnableSkill: function (char, skill_no, flag_list) {
+		if (skill_no && skill_data[skill_no] == null) return false;	// 不存在的技能編號
 
 		// 檢查是否存在互斥技能
-		skill_f = skill_data[skill_no]["skill_f"];
-		for (let tmp_skill_no of skill_f) {
-			if (char.skill[tmp_skill_no]) return false;
+		if (skill_no) {
+			skill_f = skill_data[skill_no]["skill_f"];
+			for (let tmp_skill_no of skill_f) {
+				if (char.skill[tmp_skill_no]) return false;
+			}
 		}
 
-		let flag_list = skill_data[skill_no]["flag"];
+		flag_list = flag_list || skill_data[skill_no]["flag"];	// 帶入條件參數(物件) || 讀取技能設定
 		for (let key in flag_list) {
 			let flag = flag_list[key];
 

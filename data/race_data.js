@@ -19,37 +19,26 @@ const race_data = {
 	0000: Object.assign({}, model, { name: "古族", gender: [0, 100, 0, 0] }),
 	0990: Object.assign({}, model, { name: "威爾德", rate: 20, gender: [10, 10, 40, 40] }),
 	// 1000 ~ 1999 風神眷族
+	2000: Object.assign({}, model, { name: "哈比", rate: 100 }),
 	// 2000 ~ 2999 水神眷族
 	// 3000 ~ 3999 火神眷族
 	3000: Object.assign({}, model, { name: "精靈", rate: 100 }),
-	3001: Object.assign({}, model, { name: "原生精靈", rate: 100 }),
-	3001: Object.assign({}, model, { name: "白精靈", rate: 100 }),
-	3002: Object.assign({}, model, { name: "黑精靈", rate: 100 }),
+	3001: Object.assign({}, model, { name: "黑精靈", rate: 100 }),
 	// 4000 ~ 4999 地神眷族
+	4000: Object.assign({}, model, { name: "矮人", rate: 100 }),
 	// 5000 ~ 5999 獸神眷族
 	5990: Object.assign({}, model, { name: "人類", rate: 50 }),
-	5991: Object.assign({}, model, { name: "真人", rate: 50 }),
-	5992: Object.assign({}, model, { name: "異人", rate: 50 }),
-	5993: Object.assign({}, model, { name: "耶畢特人", rate: 50 }),
+	5991: Object.assign({}, model, { name: "異人", rate: 50 }),
+	5992: Object.assign({}, model, { name: "耶畢特人", rate: 50 }),
 	// 6000 ~ 6999 魔物
 	6800: Object.assign({}, model, { name: "不死系魔物" }),
-	// 測試種族
-	9998: Object.assign({}, model, {
-		name: "測試種族1"
-		, rate: 100
-		, gender: [1, 1, 49, 49]
-		, skill: {
-			0: {}	// 矮
-		}
-	}),
-	9999: Object.assign({}, model, {
-		name: "測試種族2"
-		, rate: 100
-		, gender: [1, 1, 80, 20]
-		, skill: {
+};
 
-		}
-	}),
+// 隨機種族及權重列表
+const base_race_data = {	// 權重: [種族1, 種族2, ...]
+	5: [2000, 3000, 3001],
+	20: [4000, 5991],
+	40: [5990],
 }
 
 module.exports = {
@@ -65,5 +54,10 @@ module.exports = {
 	// 確認是否為有效的種族編號
 	contains: function (race_no) {
 		return (race_data[race_no]);
+	},
+
+	// 取得起始種族列表
+	getBaseData: function () {
+		return base_race_data;
 	},
 }
