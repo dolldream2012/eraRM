@@ -26,14 +26,14 @@ const model = {
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	"0": Object.assign({}, model, { "name": "矮", "type": 0, "action": [], "skill_f": [1], "up_list": [6] }),
-	"1": Object.assign({}, model, { "name": "高", "type": 0, "action": [], "skill_f": [0], "up_list": [7] }),
-	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "action": [], "skill_f": [3], "up_list": [4, 6] }),
-	"3": Object.assign({}, model, { "name": "胖", "type": 0, "action": [], "skill_f": [2, 4] }),
-	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "action": [], "skill_f": [5], "up_list": [6], "keep_flag": { "6": "" } }),
+	"0": Object.assign({}, model, { "name": "矮", "type": 0, "action": [], "skill_f": [1, 7], "up_list": [6] }),
+	"1": Object.assign({}, model, { "name": "高", "type": 0, "action": [], "skill_f": [0, 6, 8, 9], "up_list": [7] }),
+	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "action": [], "skill_f": [3, 7], "up_list": [4, 6] }),
+	"3": Object.assign({}, model, { "name": "胖", "type": 0, "action": [], "skill_f": [2, 4, 6, 8, 9] }),
+	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "action": [], "skill_f": [3, 5, 7], "up_list": [6], "keep_flag": { "6": "" } }),
 	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "action": [], "skill_f": [4], "up_list": [7] }),
 	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "action": [], "skill_f": [1, 3, 7], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "action": [], "skill_f": [0, 2, 4, 6], "flag": { "skill": "1^==1&5^==1" } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "action": [], "skill_f": [0, 2, 4, 6, 8, 9], "flag": { "skill": "1^==1&5^==1" } }),
 	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "action": [], "skill_f": [1, 3, 7], "flag": { "skill": "6^==1", "gender": "==2" } }),
 	"9": Object.assign({}, model, { "name": "正太", "type": 0, "action": [], "skill_f": [1, 3, 7], "flag": { "skill": "6^==1", "gender": "==3" } }),
 
@@ -42,7 +42,7 @@ const skill_data = {
 	// "51": Object.assign({}, model, { "name": "角" }),
 
 	// 2000 特徵(性相關)
-	"2030": Object.assign({}, model, { "name": "白虎", "type": 0, "action": [8] }),
+	"2030": Object.assign({}, model, { "name": "白虎", "type": 0, "action": [8], "flag": { "gender": "==2" } }),
 	"2031": Object.assign({}, model, { "name": "未熟", "type": 0, "action": [8] }),
 	"2032": Object.assign({}, model, { "name": "絕壁", "type": 0, "action": [8], "skill_f": [2033, 2034, 2035, 2036], "flag": { "gender": "==2" } }),
 	"2033": Object.assign({}, model, { "name": "貧乳", "type": 0, "action": [8], "skill_f": [2032, 2034, 2035, 2036], "flag": { "gender": "==2" } }),
@@ -237,11 +237,16 @@ const skill_data = {
 
 // 起始技能獲取條件及獲得機率列表(空白列表表示不獲取技能的機率)
 const base_skill_data = [
-	{ "flag": { "gender": "==2" }, skill_rate: { 40: [43000], 60: [] } },	// 處女
-	{ "flag": { "gender": "==3" }, skill_rate: { 40: [43001], 60: [] } },	// 童貞
-	{ skill_rate: { 30: [0, 1], 70: [] } },	// 身高: 矮, 高
-	{ skill_rate: { 30: [2, 3], 70: [] } },	// 體重: 瘦, 胖
-	{ skill_rate: { 30: [4, 5], 70: [] } },	// 肌肉: 瘦弱, 強壯
+	{ "flag": { "gender": "==2" }, skill_rate: { 40: [43000], 60: [] } },	// 女性 性經驗
+	{ "flag": { "gender": "==3" }, skill_rate: { 40: [43001], 60: [] } },	// 男性 性經驗
+	{ "flag": { "gender": "==2" }, skill_rate: { 35: [0], 15: [1], 50: [] } },	// 女性 身高
+	{ "flag": { "gender": "==3" }, skill_rate: { 20: [0], 30: [1], 50: [] } },	// 男性 身高
+	{ "flag": { "gender": "==2" }, skill_rate: { 40: [2], 20: [3], 40: [] } },	// 女性 體重
+	{ "flag": { "gender": "==3" }, skill_rate: { 30: [2], 20: [3], 50: [] } },	// 男性 體重
+	{ "flag": { "gender": "==2" }, skill_rate: { 20: [4], 20: [5], 60: [] } },	// 女性 肌肉
+	{ "flag": { "gender": "==3" }, skill_rate: { 20: [4], 40: [5], 40: [] } },	// 男性 肌肉
+	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2030], 70: [] } },	// 女性 下體
+	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 50: [2030], 50: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
 ]
 
 module.exports = {
@@ -308,6 +313,17 @@ module.exports = {
 
 	// 技能升級
 	upgSkill: function (char) {
+		// 移除衝突技能
+		for (let skill_id in char.skill) {
+			for (let skill_no of skill_data[skill_id]["skill_f"]) {	// 遍歷技能的衝突技能
+				if (char.skill[skill_no]) {	// 存在衝突技能
+					// 抵消未升級之衝突技能
+					if (char.skill[skill_id]["lv"] == 1 && char.skill[skill_id]["exp"] == 0) delete char.skill[skill_id];
+					if (char.skill[skill_no]["lv"] == 1 && char.skill[skill_no]["exp"] == 0) delete char.skill[skill_no];
+				}
+			}
+		}
+
 		// 技能升級
 		do {
 			var isUpgrade = false;	// 技能是否升級
@@ -355,6 +371,7 @@ module.exports = {
 			skill_f = skill_data[skill_no]["skill_f"];
 			for (let tmp_skill_no of skill_f) {
 				if (char.skill[tmp_skill_no]) return false;
+				if (Array.isArray(char.skill) && char.skill.includes(tmp_skill_no)) return false;
 			}
 		}
 
