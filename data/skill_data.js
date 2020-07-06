@@ -9,7 +9,9 @@ const model = {
 	, "type_sub": []	// 子類型(技能判定用)(1: 正面性格, 2: 負面性格)
 	, "max_lv": 1	// 技能等級上限
 	, "up_list": []	// 上位技能
-	, "skill_f": []	// 互斥技能(如果擁有該技能則無法學習)
+	, "skill_f": []	// 互斥技能
+	// 如果擁有該技能則無法學習
+	// 可通過下位技能設置互斥、上位技能不設置的方式，搭配 upgSkill 來達成上位技能不被下位技能抵消的設定
 	, "flag": {}	// 獲得條件、限制(前置技能、性別、種族、經歷、能力值…)
 	, "keep_flag": {}	// 獲得上位技能時不被消除之條件 { "skill_no" : { "skill": "skill_id^==1"}}
 	// skill: 可以使用 & 和 | 來設置多重條件，先判斷 | 再判斷 &，目前不支援更複雜的判斷方式
@@ -30,12 +32,12 @@ const skill_data = {
 	"1": Object.assign({}, model, { "name": "高", "type": 0, "action": [], "skill_f": [0, 6, 8, 9], "up_list": [7] }),
 	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "action": [], "skill_f": [3, 7], "up_list": [4, 6] }),
 	"3": Object.assign({}, model, { "name": "胖", "type": 0, "action": [], "skill_f": [2, 4, 6, 8, 9] }),
-	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "action": [], "skill_f": [3, 5, 7], "up_list": [6], "keep_flag": { "6": "" } }),
+	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "action": [], "skill_f": [3, 5], "up_list": [6], "keep_flag": { "6": "" } }),
 	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "action": [], "skill_f": [4], "up_list": [7] }),
-	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "action": [], "skill_f": [1, 3, 7], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "action": [], "skill_f": [0, 2, 4, 6, 8, 9], "flag": { "skill": "1^==1&5^==1" } }),
-	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "action": [], "skill_f": [1, 3, 7], "flag": { "skill": "6^==1", "gender": "==2" } }),
-	"9": Object.assign({}, model, { "name": "正太", "type": 0, "action": [], "skill_f": [1, 3, 7], "flag": { "skill": "6^==1", "gender": "==3" } }),
+	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "action": [], "skill_f": [7], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "action": [], "skill_f": [6, 8, 9], "flag": { "skill": "1^==1&5^==1" } }),
+	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "action": [], "skill_f": [], "flag": { "skill": "6^==1", "gender": "==2" } }),
+	"9": Object.assign({}, model, { "name": "正太", "type": 0, "action": [], "skill_f": [], "flag": { "skill": "6^==1", "gender": "==3" } }),
 
 	// 50 ~ 特徵
 	// "50": Object.assign({}, model, { "name": "獸耳" }),
@@ -89,7 +91,7 @@ const skill_data = {
 	// "9002": Object.assign({}, model, { "name": "堅強" }),
 	// "9003": Object.assign({}, model, { "name": "膽小" }),
 	// "9004": Object.assign({}, model, { "name": "勇敢" }),
-	// "9005": Object.assign({}, model, { "name": "輕率" }),
+	// "9005": Object.assign({}, model, { "name": "粗心" }),
 	// "9006": Object.assign({}, model, { "name": "謹慎" }),
 	// "9007": Object.assign({}, model, { "name": "天真" }),
 	// "9008": Object.assign({}, model, { "name": "腹黑" }),
