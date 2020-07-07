@@ -9,6 +9,8 @@ const model = {
 	, "type_sub": []	// 子類型(技能判定用)(1: 正面性格, 2: 負面性格)
 	, "max_lv": 1	// 技能等級上限
 	, "up_list": []	// 上位技能
+	// 可通過設置上位技能但不設置晉級條件的方式，來達成技能保留的判定權重
+	, "group_f": ""	// 互斥技能群組，同群組技能只會出現一項
 	, "skill_f": []	// 互斥技能
 	// 如果擁有該技能則無法學習
 	// 可通過下位技能設置互斥、上位技能不設置的方式，搭配 upgSkill 來達成上位技能不被下位技能抵消的設定
@@ -28,20 +30,25 @@ const model = {
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	"0": Object.assign({}, model, { "name": "矮", "type": 0, "action": [], "skill_f": [1, 7], "up_list": [6] }),
-	"1": Object.assign({}, model, { "name": "高", "type": 0, "action": [], "skill_f": [0, 6, 8, 9], "up_list": [7] }),
-	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "action": [], "skill_f": [3, 7], "up_list": [4, 6] }),
-	"3": Object.assign({}, model, { "name": "胖", "type": 0, "action": [], "skill_f": [2, 4, 6, 8, 9] }),
-	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "action": [], "skill_f": [3, 5], "up_list": [6], "keep_flag": { "6": "" } }),
-	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "action": [], "skill_f": [4], "up_list": [7] }),
-	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "action": [], "skill_f": [7], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "action": [], "skill_f": [6, 8, 9], "flag": { "skill": "1^==1&5^==1" } }),
-	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "action": [], "skill_f": [], "flag": { "skill": "6^==1", "gender": "==2" } }),
-	"9": Object.assign({}, model, { "name": "正太", "type": 0, "action": [], "skill_f": [], "flag": { "skill": "6^==1", "gender": "==3" } }),
+	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6] }),
+	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7] }),
+	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6] }),
+	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4] }),
+	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" } }),
+	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7] }),
+	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "flag": { "skill": "1^==1&5^==1" } }),
+	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2" } }),
+	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3" } }),
 
 	// 50 ~ 特徵
-	// "50": Object.assign({}, model, { "name": "獸耳" }),
-	// "51": Object.assign({}, model, { "name": "角" }),
+	"50": Object.assign({}, model, { "name": "精靈尖耳", "type": 0, "group_f": "ears" }),
+	"51": Object.assign({}, model, { "name": "貓耳", "type": 0, "group_f": "ears" }),
+	"52": Object.assign({}, model, { "name": "犬耳", "type": 0, "group_f": "ears" }),
+	"53": Object.assign({}, model, { "name": "兔耳", "type": 0, "group_f": "ears" }),
+	"54": Object.assign({}, model, { "name": "狐耳", "type": 0, "group_f": "ears" }),
+	"70": Object.assign({}, model, { "name": "牛角", "type": 0, }),
+	"71": Object.assign({}, model, { "name": "獨角", "type": 0, }),
 
 	// 2000 特徵(性相關)
 	"2030": Object.assign({}, model, { "name": "白虎", "type": 0, "action": [8], "flag": { "gender": "==2" } }),
@@ -367,19 +374,34 @@ module.exports = {
 	// 檢查可否獲得技能／是否滿足技能升級條件: 角色資料, 技能編號, 技能獲取條件
 	chkEnableSkill: function (char, skill_no, flag_list) {
 		if (skill_no && skill_data[skill_no] == null) return false;	// 不存在的技能編號
+		let isArr = Array.isArray(char.skill);	// 技能尚未初始化
 
-		// 檢查是否存在互斥技能
 		if (skill_no) {
-			skill_f = skill_data[skill_no]["skill_f"];
+			// 檢查是否存在互斥技能群組(已擁有同類型屬性)
+			let group_list_1 = skill_data[skill_no]["group_f"].split("|");
+			for (let key in char.skill) {
+				let tmp_skill_id = (isArr) ? char.skill[key] : key;
+				let group_list_2 = skill_data[tmp_skill_id]["group_f"].split("|");
+
+				if (group_list_1.some(group => group_list_2.includes(group))) {	// 存在相同技能群組
+					if (skill_data[tmp_skill_id]["up_list"].includes(skill_no) == false) return false;	// 檢查技能並非已擁有技能的上位技能
+				}
+			}
+
+			// 檢查是否存在互斥技能
+			let skill_f = skill_data[skill_no]["skill_f"];
 			for (let tmp_skill_no of skill_f) {
-				if (char.skill[tmp_skill_no]) return false;
-				if (Array.isArray(char.skill) && char.skill.includes(tmp_skill_no)) return false;
+				if (isArr) {	// 技能尚未初始化
+					if (char.skill.includes(tmp_skill_no)) return false;
+				} else {
+					if (char.skill[tmp_skill_no]) return false;
+				}
 			}
 		}
 
 		// 檢查技能獲取條件
 		flag_list = flag_list || (skill_no && skill_data[skill_no]["flag"]);	// 帶入條件參數(物件) || 讀取技能設定
-		if (flag_list) {
+		if (flag_list) {	// 存在技能獲取條件
 			for (let key in flag_list) {
 				let flag = flag_list[key];
 

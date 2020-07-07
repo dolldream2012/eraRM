@@ -42,6 +42,7 @@ const model = {
 	// 如果存在互斥技能，會互相抵消
 	, "addict": []	// 喜好屬性
 	, "favorite": []	// 喜好物品
+	// , "random_skill": false	// 取得隨機技能
 };
 
 // 角色列表
