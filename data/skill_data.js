@@ -247,7 +247,7 @@ const skill_data = {
 // 起始技能獲取條件及獲得機率列表(空白列表表示不獲取技能的機率)
 const base_skill_data = [
 	{ "flag": { "gender": "==2" }, skill_rate: { 40: [43000], 60: [] } },	// 女性 性經驗
-	{ "flag": { "gender": "==3" }, skill_rate: { 40: [43001], 60: [] } },	// 男性 性經驗
+	{ "flag": { "gender": "==3" }, skill_rate: { 20: [43001], 80: [] } },	// 男性 性經驗
 	{ "flag": { "gender": "==2" }, skill_rate: { 35: [0], 15: [1], 50: [] } },	// 女性 身高
 	{ "flag": { "gender": "==3" }, skill_rate: { 20: [0], 30: [1], 50: [] } },	// 男性 身高
 	{ "flag": { "gender": "==2" }, skill_rate: { 40: [2], 20: [3], 40: [] } },	// 女性 體重
