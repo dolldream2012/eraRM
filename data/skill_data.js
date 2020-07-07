@@ -322,8 +322,7 @@ module.exports = {
 
 	// 技能升級
 	upgSkill: function (char) {
-		// 移除衝突技能
-		for (let skill_id in char.skill) {
+		for (let skill_id in char.skill) {	// 移除衝突技能
 			for (let skill_no of skill_data[skill_id]["skill_f"]) {	// 遍歷技能的衝突技能
 				if (char.skill[skill_no]) {	// 存在衝突技能
 					// 抵消未升級之衝突技能
@@ -376,7 +375,7 @@ module.exports = {
 		if (skill_no && skill_data[skill_no] == null) return false;	// 不存在的技能編號
 		let isArr = Array.isArray(char.skill);	// 技能尚未初始化
 
-		if (skill_no) {
+		if (skill_no && Object.keys(char.skill).length > 0) {
 			// 檢查是否存在互斥技能群組(已擁有同類型屬性)
 			let group_list_1 = skill_data[skill_no]["group_f"].split("|");
 			for (let key in char.skill) {
