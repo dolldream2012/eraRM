@@ -36,10 +36,10 @@ const skill_data = {
 	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4], "action": [10], "effect": { "char": { "weight": "*1.2" } } }),
 	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" }, "action": [10], "effect": { "char": { "weight": "*0.9" } } }),
 	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7], "action": [10], "effect": { "char": { "height": "*1.1" } } }),
-	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "flag": { "skill": "1^==1&5^==1" }, "action": [10], "effect": { "char": { "height": "*1.2", "weight": "*1.2", "age_outside": "+3" } } }),
-	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<15" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
-	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<15" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
+	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1&3^!=1&5^!=1" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "flag": { "skill": "1^==1&5^==1&2^!=1" }, "action": [10], "effect": { "char": { "height": "*1.2", "weight": "*1.2", "age_outside": "+3" } } }),
+	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
+	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
 
 	// 50 ~ 特徵
 	"50": Object.assign({}, model, { "name": "精靈尖耳", "type": 0, "group_f": "ears", "action": [] }),
@@ -429,6 +429,10 @@ module.exports = {
 								let skill_no = tmp[0];
 								let skill_flag = tmp[1];
 
+								if (char["skill"][skill_no] == null && skill_flag == "!=1") {	// 不包含指定技能
+									tmp_pass = true;
+									break;
+								}
 								if (char["skill"][skill_no] == null) continue;
 								if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == true) {
 									tmp_pass = true;
@@ -442,6 +446,7 @@ module.exports = {
 							let skill_no = tmp[0];
 							let skill_flag = tmp[1];
 
+							if (char["skill"][skill_no] == null && skill_flag == "!=1") continue;	// 不包含指定技能
 							if (char["skill"][skill_no] == null) return false;
 							if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == false) return false;
 						}

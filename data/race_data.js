@@ -11,6 +11,8 @@ const model = {
 	, "rate": 0	// 種族權重(越高越容易影響特徵)
 	, "gender": [1, 1, 49, 49]	// 種族性別比例(0: 多性, 1:無性, 2:女性, 3:男性)
 	, "lifespan": 100	// 種族壽命
+	, "height": 165	// 種族平均身高(model 為基礎值，重置角色身高時，會依基礎值與各種族設定的數值百分比發生變動)
+	, "weight": 65	// 種族平均體重(model 為基礎值，重置角色體重時，會依基礎值與各種族設定的數值百分比發生變動)
 	, "skill": []	// 起始技能獲取條件及獲得機率列表(空白列表表示不獲取技能的機率)(group_f 為判斷種族獲得技能機率前，需先清空的技能群組)
 };
 
@@ -27,6 +29,8 @@ const race_data = {
 		"name": "精靈"
 		, "rate": 100
 		, "lifespan": 1500
+		, "height": 150
+		, "weight": 50
 		, "skill": [
 			{ "group_f": "height", skill_rate: { 60: [0], 40: [] } },	// 身高
 			{ "group_f": "weight", skill_rate: { 70: [2], 30: [] } },	// 體重
@@ -37,6 +41,8 @@ const race_data = {
 		"name": "黑精靈"
 		, "rate": 95
 		, "lifespan": 1500
+		, "height": 150
+		, "weight": 50
 		, "skill": [
 			{ "group_f": "height", skill_rate: { 60: [0], 40: [] } },	// 身高
 			{ "group_f": "weight", skill_rate: { 70: [2], 30: [] } },	// 體重
