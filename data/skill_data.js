@@ -5,7 +5,6 @@ const util = require('../lib/Util.js');	// test
 const model = {
 	"name": ""	// 技能名稱
 	, "type": ""	// 類型(0: 特徵, 1:被動, 2: 攻擊, 3: 輔助, 8: 經歷, 9: 個性)
-	, "action": []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 天賦轉化)
 	, "type_sub": []	// 子類型(技能判定用)(1: 正面性格, 2: 負面性格)
 	, "max_lv": 1	// 技能等級上限
 	, "up_list": []	// 上位技能
@@ -20,6 +19,7 @@ const model = {
 	// skill_compare: 技能1 與 技能2 比較等級 { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_b"}
 	// 複數條件: 可學習1|可學習2@不可學習1|不可學習2
 	// 不同屬性條件必須同時成立
+	, "action": []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 天賦轉化, 10: 創造角色)
 	, "cost": {}	// 消耗及發動條件
 	, "effect": {}	// 效果
 	, "exp": []	// 升級所需經驗
@@ -30,38 +30,38 @@ const model = {
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6] }),
-	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7] }),
-	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6] }),
-	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4] }),
-	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" } }),
-	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7] }),
-	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "flag": { "skill": "1^==1&5^==1" } }),
-	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2" } }),
-	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3" } }),
+	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "*0.8", "age_outside": "-2" } } }),
+	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7], "action": [10], "effect": { "char": { "height": "*1.2", "age_outside": "+2" } } }),
+	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6], "action": [10], "effect": { "char": { "weight": "*0.8" } } }),
+	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4], "action": [10], "effect": { "char": { "weight": "*1.2" } } }),
+	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" }, "action": [10], "effect": { "char": { "weight": "*0.9" } } }),
+	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7], "action": [10], "effect": { "char": { "height": "*1.1" } } }),
+	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "flag": { "skill": "1^==1&5^==1" }, "action": [10], "effect": { "char": { "height": "*1.2", "weight": "*1.2", "age_outside": "+3" } } }),
+	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<15" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
+	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<15" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
 
 	// 50 ~ 特徵
-	"50": Object.assign({}, model, { "name": "精靈尖耳", "type": 0, "group_f": "ears" }),
-	"51": Object.assign({}, model, { "name": "貓耳", "type": 0, "group_f": "ears" }),
-	"52": Object.assign({}, model, { "name": "犬耳", "type": 0, "group_f": "ears" }),
-	"53": Object.assign({}, model, { "name": "兔耳", "type": 0, "group_f": "ears" }),
-	"54": Object.assign({}, model, { "name": "狐耳", "type": 0, "group_f": "ears" }),
-	"70": Object.assign({}, model, { "name": "牛角", "type": 0, }),
-	"71": Object.assign({}, model, { "name": "獨角", "type": 0, }),
+	"50": Object.assign({}, model, { "name": "精靈尖耳", "type": 0, "group_f": "ears", "action": [] }),
+	"51": Object.assign({}, model, { "name": "貓耳", "type": 0, "group_f": "ears", "action": [] }),
+	"52": Object.assign({}, model, { "name": "犬耳", "type": 0, "group_f": "ears", "action": [] }),
+	"53": Object.assign({}, model, { "name": "兔耳", "type": 0, "group_f": "ears", "action": [] }),
+	"54": Object.assign({}, model, { "name": "狐耳", "type": 0, "group_f": "ears", "action": [] }),
+	"70": Object.assign({}, model, { "name": "牛角", "type": 0, "group_f": "horn", "action": [] }),
+	"71": Object.assign({}, model, { "name": "獨角", "type": 0, "group_f": "horn", "action": [] }),
 
 	// 2000 特徵(性相關)
-	"2030": Object.assign({}, model, { "name": "白虎", "type": 0, "action": [8], "flag": { "gender": "==2" } }),
-	"2031": Object.assign({}, model, { "name": "未熟", "type": 0, "action": [8] }),
-	"2032": Object.assign({}, model, { "name": "絕壁", "type": 0, "action": [8], "skill_f": [2033, 2034, 2035, 2036], "flag": { "gender": "==2" } }),
-	"2033": Object.assign({}, model, { "name": "貧乳", "type": 0, "action": [8], "skill_f": [2032, 2034, 2035, 2036], "flag": { "gender": "==2" } }),
-	"2034": Object.assign({}, model, { "name": "巨乳", "type": 0, "action": [8], "skill_f": [2032, 2033, 2035, 2036], "flag": { "gender": "==2" } }),
-	"2035": Object.assign({}, model, { "name": "爆乳", "type": 0, "action": [8], "skill_f": [2032, 2033, 2034, 2036], "flag": { "gender": "==2" } }),
-	"2036": Object.assign({}, model, { "name": "魔乳", "type": 0, "action": [8], "skill_f": [2032, 2033, 2034, 2035], "flag": { "gender": "==2" } }),
+	"2030": Object.assign({}, model, { "name": "未熟", "type": 0, "action": [8, 10], "effect": { "char": { "age_inside": "**0.55+6.5" } } }),	// 預設年齡為 10 ~ 40 歲，通過運算使結果落在 10 ~ 14 之間
+	"2031": Object.assign({}, model, { "name": "白虎", "type": 0, "flag": { "gender": "==2" }, "action": [8, 10] }),
+	"2040": Object.assign({}, model, { "name": "絕壁", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
+	"2041": Object.assign({}, model, { "name": "貧乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
+	"2042": Object.assign({}, model, { "name": "巨乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
+	"2043": Object.assign({}, model, { "name": "爆乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
+	"2044": Object.assign({}, model, { "name": "魔乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
 
 	// 3000 ~ 5999 體質
-	"3000": Object.assign({}, model, { "name": "害怕疼痛", "type": 0, "action": [8], "skill_f": [3001] }),
-	"3001": Object.assign({}, model, { "name": "不怕疼痛", "type": 0, "action": [8], "skill_f": [3000] }),
+	"3000": Object.assign({}, model, { "name": "害怕疼痛", "type": 0, "skill_f": [3001], "action": [8, 10], "effect": { "char": { "age_inside": "-3" } } }),
+	"3001": Object.assign({}, model, { "name": "不怕疼痛", "type": 0, "skill_f": [3000], "action": [8, 10], "effect": { "char": { "age_inside": "+3" } } }),
 	// "3002": Object.assign({}, model, { "name": "喜歡疼痛" }),
 	// "3500": Object.assign({}, model, { "name": "抗藥性" }),
 	// "3500": Object.assign({}, model, { "name": "藥人" }),
@@ -236,8 +236,8 @@ const skill_data = {
 	// "42001": Object.assign({}, model, { "name": "育兒中" }),
 
 	// 43000 ~ 45999 經歷(性相關)
-	"43000": Object.assign({}, model, { "name": "處女", "type": 8, "action": [8] }),
-	"43001": Object.assign({}, model, { "name": "童貞", "type": 8, "action": [8] }),
+	"43000": Object.assign({}, model, { "name": "處女", "type": 8, "action": [8, 10], "effect": { "char": { "age_exp": "-5" } } }),
+	"43001": Object.assign({}, model, { "name": "童貞", "type": 8, "action": [8, 10], "effect": { "char": { "age_exp": "-5" } } }),
 
 	// 46000 ~ 48999 稱號
 	// 49000 ~ 49999 稱號(性相關)
@@ -254,8 +254,11 @@ const base_skill_data = [
 	{ "flag": { "gender": "==3" }, skill_rate: { 30: [2], 20: [3], 50: [] } },	// 男性 體重
 	{ "flag": { "gender": "==2" }, skill_rate: { 20: [4], 20: [5], 60: [] } },	// 女性 肌肉
 	{ "flag": { "gender": "==3" }, skill_rate: { 20: [4], 40: [5], 40: [] } },	// 男性 肌肉
-	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2030], 70: [] } },	// 女性 下體
-	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 50: [2030], 50: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
+	{ "flag": { "gender": "!=1" }, skill_rate: { 5: [2030], 95: [] } },	// 未熟
+	{ "flag": { "age": "<12" }, skill_rate: { 80: [2030], 20: [] } },	// 未熟
+	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2031], 70: [] } },	// 女性 下體
+	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 50: [2031], 50: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
+	{ "flag": { "gender": "==2" }, skill_rate: { 5: [2040, 2043, 2044], 20: [2041, 2042], 75: [] } },	// 女性 胸部
 ]
 
 module.exports = {
@@ -375,6 +378,7 @@ module.exports = {
 		if (skill_no && skill_data[skill_no] == null) return false;	// 不存在的技能編號
 		let isArr = Array.isArray(char.skill);	// 技能尚未初始化
 
+		// 檢查是否存在互斥技能
 		if (skill_no && Object.keys(char.skill).length > 0) {
 			// 檢查是否存在互斥技能群組(已擁有同類型屬性)
 			let group_list_1 = skill_data[skill_no]["group_f"].split("|");
@@ -406,6 +410,10 @@ module.exports = {
 
 				if (key == "gender") {	// 判斷角色性別時，若條件僅指定為女性或男性，則默認扶他符合條件(若指定為女性或男性但不指定扶他，則不處理)
 					if (flag == "==2" || flag == "==3") flag += "|==0";
+				}
+
+				if ((key == "age" && char.age == -1) || (key == "age_t" && char.age_t == -1)) {
+					return false;	// 未設定年齡，無從判斷條件
 				}
 
 				if (key == "skill") {	// eg. no_1^==1|no_2^==1&no_3^==0
