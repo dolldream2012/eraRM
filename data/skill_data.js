@@ -21,8 +21,8 @@ const model = {
 	, "action": []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 天賦轉化, 10: 創造角色)
 	, "cost": {}	// 消耗及發動條件
 	, "effect": {}	// 效果
-	// 效果1?屬性1-1%條件1-1?屬性1-2%條件1-2#效果2?屬性2%條件2(條件規則同 flag / keep_flag)
-	// eg. "height": "gender%==3?+10#+5" : 男性身高+10，非男性身高+5
+	// 效果1?屬性1-1:條件1-1?屬性1-2:條件1-2#效果2?屬性2:條件2(條件規則同 flag / keep_flag)
+	// eg. "height": "gender:==3?+10#+5" : 男性身高+10，非男性身高+5
 	// 達成條件1後立即處理效果1，不會再進入條件2的判斷和效果2的發動，因此優先級較高的效果需向前放置
 	, "exp": []	// 升級所需經驗
 	, "enable": 9	// 技能開關(0: 關閉, 1: 啟動, 8: 禁止關閉, 9: 禁止啟動)
@@ -32,7 +32,7 @@ const model = {
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "-10", "weight": "-5", "age_outside": "-3?gender%==3#-1" } } }),
+	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "-10", "weight": "-5", "age_outside": "-3?gender:==3#-1" } } }),
 	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7], "action": [10], "effect": { "char": { "height": "+10", "weight": "+5", "age_outside": "+1" } } }),
 	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6], "action": [10], "effect": { "char": { "weight": "-5", "age_outside": "-1" } } }),
 	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4], "action": [10], "effect": { "char": { "weight": "+10", "age_outside": "+1" } } }),
@@ -283,23 +283,16 @@ module.exports = {
 		return base_skill_data;
 	},
 
-	// 取得指定用途技能列表
-	getDataByAction: function (action) {
+	// 取得指定效果類型技能列表
+	getDataByEffect: function (skill_list, action, type) {
 		let obj = new Object();
 
-		for (let skill_no in skill_data) {
-			if (skill_data[skill_no]["action"].includes(action)) obj[skill_no] = skill_data[skill_no];
-		}
-
-		return obj;
-	},
-
-	// 取得指定類型技能列表
-	getDataByType: function (...type) {
-		let obj = new Object();
-
-		for (let skill_no in skill_data) {
-			if (type.includes(skill_data[skill_no]["type"])) obj[skill_no] = skill_data[skill_no];
+		skill_list = skill_list || skill_data;
+		for (let skill_no in skill_list) {
+			if (tmp_skill_data = skill_data[skill_no]) {
+				if (action == null && tmp_skill_data["action"].includes(action) == false) continue;
+				if (tmp_skill_data["effect"][type]) obj[skill_no] = tmp_skill_data["effect"][type];
+			}
 		}
 
 		return obj;
@@ -427,19 +420,19 @@ module.exports = {
 					if (tmp.length == 1) {
 						let tmp_value = value;
 						value = util.opeStr(value + adjust);
-						// console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
+						console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
 						break;
 					} else {
 						let flag_list = Object();
 						for (let i = 1; i < tmp.length; i++) {
-							let flag_data = tmp[i].split("%");
+							let flag_data = tmp[i].split(":");
 							flag_list[flag_data[0]] = flag_data[1];
 						}
 
 						if (char_data.chkCharFlag(char, flag_list)) {
 							let tmp_value = value;
 							value = util.opeStr(value + adjust);
-							// console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
+							console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
 							break;
 						}
 					}
