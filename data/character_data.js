@@ -1,5 +1,4 @@
-// const util = global.util;
-const util = require('../lib/Util.js');	// test
+const util = global.util;
 
 /*
 創立角色以角色模版為主，預設角色只需要填寫替換資料即可
@@ -18,6 +17,7 @@ const model = {
 	, "height": -1	// 身高
 	, "weight": -1	// 體重
 	, "body_b": -1	// 胸圍
+	, "body_b_u": -1	// 下胸圍
 	, "body_w": -1	// 腰圍
 	, "body_h": -1	// 臀圍
 	, "lv": 1		// 等級
@@ -121,5 +121,113 @@ module.exports = {
 		random_value = Math.round(random_value * 10) / 10;
 
 		return random_value;
+	},
+
+	// 檢查角色是否符合條件
+	chkCharFlag: function (char, flag_list) {
+		for (let key in flag_list) {
+			let flag = flag_list[key];
+
+			if (key == "gender") {	// 判斷角色性別時，若條件僅指定為女性或男性，則默認扶他符合條件(若指定為女性或男性但不指定扶他，則不處理)
+				if (flag == "==2" || flag == "==3") flag += "|==0";
+			}
+
+			if ((key == "age" && char.age == -1) || (key == "age_t" && char.age_t == -1)) {
+				return false;	// 未設定年齡，無從判斷條件
+			}
+
+			if (key == "skill") {	// eg. no_1^==1|no_2^==1&no_3^==0
+				let tmp_and_list = flag.split("&");
+
+				for (let tmp_and_str of tmp_and_list) {
+					if (tmp_and_str.includes("|")) {
+						let tmp_pass = false;
+
+						let tmp_or_list = tmp_and_str.split("|");
+						for (let tmp_or_str of tmp_or_list) {
+							let tmp = tmp_or_str.split("^");
+							let skill_no = tmp[0];
+							let skill_flag = tmp[1];
+
+							if (char["skill"][skill_no] == null && skill_flag == "!=1") {	// 不包含指定技能
+								tmp_pass = true;
+								break;
+							}
+							if (char["skill"][skill_no] == null) continue;
+							if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == true) {
+								tmp_pass = true;
+								break;
+							}
+						}
+
+						if (tmp_pass == false) return false;
+					} else {
+						let tmp = tmp_and_str.split("^");
+						let skill_no = tmp[0];
+						let skill_flag = tmp[1];
+
+						if (char["skill"][skill_no] == null && skill_flag == "!=1") continue;	// 不包含指定技能
+						if (char["skill"][skill_no] == null) return false;
+						if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == false) return false;
+					}
+				}
+			} else if (key == "skill_compare") {	// { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_b"}
+				let tmp_and_list = flag.split("&");
+
+				for (let tmp_list of tmp_and_list) {
+					let tmp = tmp_list.split("^");
+					let skill_no_1 = tmp[0];
+					let skill_no_2 = tmp[1];
+					let skill_flag = tmp[2];
+
+					if (char["skill"][skill_no_1] == null || char["skill"][skill_no_2] == null) return false;
+					skill_flag = skill_flag.replace("skill_1", char["skill"][skill_no_1]["lv"]);
+					skill_flag = skill_flag.replace("skill_2", char["skill"][skill_no_2]["lv"]);
+					if (util.opeStr(skill_flag) == false) return false;
+				}
+			} else if (Array.isArray(char[key]) || /[@|]/.test(flag)) {	// 檢查角色是否擁有某屬性 eg. no_1|no_2!no_3
+				let tmp = flag.split("@");
+				let enable_str = tmp[0];	// 可學習條件列表
+				let disable_str = tmp[1];	// 不可學習條件列表
+
+				if (enable_str != "") {
+					let pass = false;
+
+					let enable_list = enable_str.split("|");
+					for (let enable_no of enable_list) {
+						if (Array.isArray(char[key])) {
+							if (char[key].includes(enable_no * 1)) {
+								pass = true;
+								break;
+							}
+						} else {
+							if (util.opeStr(char[key] + enable_no) == true) {
+								pass = true;
+								break;
+							}
+						}
+					}
+
+					if (pass == false) return false;	// 角色不具備可學習技能條件
+				}
+
+				if (disable_str && disable_str != "") {
+					let disable_list = disable_str.split("|");
+					for (let disable_no of disable_list) {
+						if (isNaN(disable_no)) disable_no = disable_no * 1;
+
+						if (Array.isArray(char[key])) {	// 角色具備不可學習技能條件
+							if (char[key].includes(disable_no * 1)) return false;
+						} else {
+							if (util.opeStr(char[key] + disable_no) == false) return false;
+						}
+					}
+				}
+			} else {
+				if (util.opeStr(char[key] + flag) == false) return false;
+			}
+		}
+
+		return true;
 	}
 }

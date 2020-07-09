@@ -1,5 +1,5 @@
 // const util = global.util;
-const util = require('../lib/Util.js');	// test
+const char_data = global.char_data;
 
 // 模版
 const model = {
@@ -17,11 +17,13 @@ const model = {
 	, "keep_flag": {}	// 獲得上位技能時不被消除之條件 { "skill_no" : { "skill": "skill_id^==1"}}
 	// skill: 可以使用 & 和 | 來設置多重條件，先判斷 | 再判斷 &，目前不支援更複雜的判斷方式
 	// skill_compare: 技能1 與 技能2 比較等級 { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_b"}
-	// 複數條件: 可學習1|可學習2@不可學習1|不可學習2
-	// 不同屬性條件必須同時成立
+	// 複數條件: 可學習1&(可學習2-1|可學習2-1)@不可學習1|不可學習2
 	, "action": []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 天賦轉化, 10: 創造角色)
 	, "cost": {}	// 消耗及發動條件
 	, "effect": {}	// 效果
+	// 效果1?屬性1-1%條件1-1?屬性1-2%條件1-2#效果2?屬性2%條件2(條件規則同 flag / keep_flag)
+	// eg. "height": "gender%==3?+10#+5" : 男性身高+10，非男性身高+5
+	// 達成條件1後立即處理效果1，不會再進入條件2的判斷和效果2的發動，因此優先級較高的效果需向前放置
 	, "exp": []	// 升級所需經驗
 	, "enable": 9	// 技能開關(0: 關閉, 1: 啟動, 8: 禁止關閉, 9: 禁止啟動)
 };
@@ -30,16 +32,16 @@ const model = {
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "*0.8", "age_outside": "-2" } } }),
-	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7], "action": [10], "effect": { "char": { "height": "*1.2", "age_outside": "+2" } } }),
-	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6], "action": [10], "effect": { "char": { "weight": "*0.8" } } }),
-	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4], "action": [10], "effect": { "char": { "weight": "*1.2" } } }),
-	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" }, "action": [10], "effect": { "char": { "weight": "*0.9" } } }),
-	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7], "action": [10], "effect": { "char": { "height": "*1.1" } } }),
-	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1&3^!=1&5^!=1" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "flag": { "skill": "1^==1&5^==1&2^!=1" }, "action": [10], "effect": { "char": { "height": "*1.2", "weight": "*1.2", "age_outside": "+3" } } }),
-	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
-	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "*0.8", "weight": "*0.8", "age_outside": "-3" } } }),
+	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "-10", "weight": "-5", "age_outside": "-3?gender%==3#-1" } } }),
+	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7], "action": [10], "effect": { "char": { "height": "+10", "weight": "+5", "age_outside": "+1" } } }),
+	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6], "action": [10], "effect": { "char": { "weight": "-5", "age_outside": "-1" } } }),
+	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4], "action": [10], "effect": { "char": { "weight": "+10", "age_outside": "+1" } } }),
+	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" }, "action": [10], "effect": { "char": { "weight": "-10", "age_outside": "-1" } } }),
+	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7], "action": [10], "effect": { "char": { "weight": "+5", "age_outside": "+1" } } }),
+	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "skill_f": [3, 5], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-2" } } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "skill_f": [3], "flag": { "skill": "1^==1&5^==1" }, "action": [10], "effect": { "char": { "height": "+10", "weight": "+10", "age_outside": "+2" } } }),
+	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-2" } } }),
+	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-2" } } }),
 
 	// 50 ~ 特徵
 	"50": Object.assign({}, model, { "name": "精靈尖耳", "type": 0, "group_f": "ears", "action": [] }),
@@ -236,8 +238,8 @@ const skill_data = {
 	// "42001": Object.assign({}, model, { "name": "育兒中" }),
 
 	// 43000 ~ 45999 經歷(性相關)
-	"43000": Object.assign({}, model, { "name": "處女", "type": 8, "action": [8, 10], "effect": { "char": { "age_exp": "-5" } } }),
-	"43001": Object.assign({}, model, { "name": "童貞", "type": 8, "action": [8, 10], "effect": { "char": { "age_exp": "-5" } } }),
+	"43000": Object.assign({}, model, { "name": "處女", "type": 8, "action": [8, 10], "effect": { "char": { "age_exp": "-3" } } }),
+	"43001": Object.assign({}, model, { "name": "童貞", "type": 8, "action": [8, 10], "effect": { "char": { "age_exp": "-3" } } }),
 
 	// 46000 ~ 48999 稱號
 	// 49000 ~ 49999 稱號(性相關)
@@ -258,7 +260,7 @@ const base_skill_data = [
 	{ "flag": { "age": "<12" }, skill_rate: { 80: [2030], 20: [] } },	// 未熟
 	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2031], 70: [] } },	// 女性 下體
 	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 50: [2031], 50: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
-	{ "flag": { "gender": "==2" }, skill_rate: { 5: [2040, 2043, 2044], 20: [2041, 2042], 75: [] } },	// 女性 胸部
+	{ "flag": { "gender": "==2" }, skill_rate: { 20: [2041, 2042], 1: [2043], 3: [2040, 2044], 766: [] } },	// 女性 胸部
 ]
 
 module.exports = {
@@ -404,111 +406,47 @@ module.exports = {
 
 		// 檢查技能獲取條件
 		flag_list = flag_list || (skill_no && skill_data[skill_no]["flag"]);	// 帶入條件參數(物件) || 讀取技能設定
-		if (flag_list) {	// 存在技能獲取條件
-			for (let key in flag_list) {
-				let flag = flag_list[key];
+		if (flag_list) {
+			return char_data.chkCharFlag(char, flag_list);
+		} else {
+			return true;
+		}
+	},
 
-				if (key == "gender") {	// 判斷角色性別時，若條件僅指定為女性或男性，則默認扶他符合條件(若指定為女性或男性但不指定扶他，則不處理)
-					if (flag == "==2" || flag == "==3") flag += "|==0";
-				}
+	// 處理技能效果(依據技能調整屬性): 角色, 生效技能, 屬性值, 判斷項目
+	setStatusByTalent: function (char, active_skill_list, value, item) {
+		for (let skill_id in active_skill_list) {
+			let effect = active_skill_list[skill_id];
 
-				if ((key == "age" && char.age == -1) || (key == "age_t" && char.age_t == -1)) {
-					return false;	// 未設定年齡，無從判斷條件
-				}
+			if (adjust_str = effect[item]) {
+				let adjust_list = adjust_str.split("#");
+				for (let adjust_flag_str of adjust_list) {
+					let tmp = adjust_flag_str.split("?");
+					let adjust = tmp[0];
 
-				if (key == "skill") {	// eg. no_1^==1|no_2^==1&no_3^==0
-					let tmp_and_list = flag.split("&");
-
-					for (let tmp_and_str of tmp_and_list) {
-						if (tmp_and_str.includes("|")) {
-							let tmp_pass = false;
-
-							let tmp_or_list = tmp_and_str.split("|");
-							for (let tmp_or_str of tmp_or_list) {
-								let tmp = tmp_or_str.split("^");
-								let skill_no = tmp[0];
-								let skill_flag = tmp[1];
-
-								if (char["skill"][skill_no] == null && skill_flag == "!=1") {	// 不包含指定技能
-									tmp_pass = true;
-									break;
-								}
-								if (char["skill"][skill_no] == null) continue;
-								if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == true) {
-									tmp_pass = true;
-									break;
-								}
-							}
-
-							if (tmp_pass == false) return false;
-						} else {
-							let tmp = tmp_and_str.split("^");
-							let skill_no = tmp[0];
-							let skill_flag = tmp[1];
-
-							if (char["skill"][skill_no] == null && skill_flag == "!=1") continue;	// 不包含指定技能
-							if (char["skill"][skill_no] == null) return false;
-							if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == false) return false;
-						}
-					}
-				} else if (key == "skill_compare") {	// { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_b"}
-					let tmp_and_list = flag.split("&");
-
-					for (let tmp_list of tmp_and_list) {
-						let tmp = tmp_list.split("^");
-						let skill_no_1 = tmp[0];
-						let skill_no_2 = tmp[1];
-						let skill_flag = tmp[2];
-
-						if (char["skill"][skill_no_1] == null || char["skill"][skill_no_2] == null) return false;
-						skill_flag = skill_flag.replace("skill_1", char["skill"][skill_no_1]["lv"]);
-						skill_flag = skill_flag.replace("skill_2", char["skill"][skill_no_2]["lv"]);
-						if (util.opeStr(skill_flag) == false) return false;
-					}
-				} else if (Array.isArray(char[key]) || /[@|]/.test(flag)) {	// 檢查角色是否擁有某屬性 eg. no_1|no_2!no_3
-					let tmp = flag.split("@");
-					let enable_str = tmp[0];	// 可學習條件列表
-					let disable_str = tmp[1];	// 不可學習條件列表
-
-					if (enable_str != "") {
-						let pass = false;
-
-						let enable_list = enable_str.split("|");
-						for (let enable_no of enable_list) {
-							if (Array.isArray(char[key])) {
-								if (char[key].includes(enable_no * 1)) {
-									pass = true;
-									break;
-								}
-							} else {
-								if (util.opeStr(char[key] + enable_no) == true) {
-									pass = true;
-									break;
-								}
-							}
+					if (tmp.length == 1) {
+						let tmp_value = value;
+						value = util.opeStr(value + adjust);
+						// console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
+						break;
+					} else {
+						let flag_list = Object();
+						for (let i = 1; i < tmp.length; i++) {
+							let flag_data = tmp[i].split("%");
+							flag_list[flag_data[0]] = flag_data[1];
 						}
 
-						if (pass == false) return false;	// 角色不具備可學習技能條件
-					}
-
-					if (disable_str && disable_str != "") {
-						let disable_list = disable_str.split("|");
-						for (let disable_no of disable_list) {
-							if (isNaN(disable_no)) disable_no = disable_no * 1;
-
-							if (Array.isArray(char[key])) {	// 角色具備不可學習技能條件
-								if (char[key].includes(disable_no * 1)) return false;
-							} else {
-								if (util.opeStr(char[key] + disable_no) == false) return false;
-							}
+						if (char_data.chkCharFlag(char, flag_list)) {
+							let tmp_value = value;
+							value = util.opeStr(value + adjust);
+							// console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
+							break;
 						}
 					}
-				} else {
-					if (util.opeStr(char[key] + flag) == false) return false;
 				}
 			}
 		}
 
-		return true;
+		return value;
 	},
 }
