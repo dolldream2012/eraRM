@@ -21,8 +21,8 @@ const model = {
 	, "action": []	// 判定時機(0: 行動, 1: 攻擊, 2: 防禦, 3: 探索, 4: 生產, 5: 製作, 6: 服務, 7: 日常, 8: 睡覺, 9: 天賦轉化, 10: 創造角色)
 	, "cost": {}	// 消耗及發動條件
 	, "effect": {}	// 效果
-	// 效果1?屬性1-1:條件1-1?屬性1-2:條件1-2#效果2?屬性2:條件2(條件規則同 flag / keep_flag)
-	// eg. "height": "gender:==3?+10#+5" : 男性身高+10，非男性身高+5
+	// 效果1:屬性1-1^^條件1-1&&屬性1-2^^條件1-2;效果2:屬性2^^條件2(條件規則同 flag / keep_flag)
+	// eg. "height": "+10:gender^^==3;+5" : 男性身高+10，非男性身高+5
 	// 達成條件1後立即處理效果1，不會再進入條件2的判斷和效果2的發動，因此優先級較高的效果需向前放置
 	, "exp": []	// 升級所需經驗
 	, "enable": 9	// 技能開關(0: 關閉, 1: 啟動, 8: 禁止關閉, 9: 禁止啟動)
@@ -32,16 +32,16 @@ const model = {
 const skill_data = {
 	// 0 ~ 2999 特徵
 	// 0 ~ 特徵(體型)
-	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "-10", "weight": "-5", "age_outside": "-3?gender:==3#-1" } } }),
-	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7], "action": [10], "effect": { "char": { "height": "+10", "weight": "+5", "age_outside": "+1" } } }),
+	"0": Object.assign({}, model, { "name": "矮", "type": 0, "group_f": "height", "up_list": [6], "action": [10], "effect": { "char": { "height": "-10", "weight": "-5", "age_outside": "-2:gender^^==3;-1" } } }),
+	"1": Object.assign({}, model, { "name": "高", "type": 0, "group_f": "height", "up_list": [7], "action": [10], "effect": { "char": { "height": "+10", "weight": "+5", "age_outside": "+2:gender^^==2;+1" } } }),
 	"2": Object.assign({}, model, { "name": "瘦", "type": 0, "group_f": "weight", "up_list": [6], "action": [10], "effect": { "char": { "weight": "-5", "age_outside": "-1" } } }),
 	"3": Object.assign({}, model, { "name": "胖", "type": 0, "group_f": "weight", "skill_f": [4], "action": [10], "effect": { "char": { "weight": "+10", "age_outside": "+1" } } }),
-	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" }, "action": [10], "effect": { "char": { "weight": "-10", "age_outside": "-1" } } }),
-	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7], "action": [10], "effect": { "char": { "weight": "+5", "age_outside": "+1" } } }),
-	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "skill_f": [3, 5], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-2" } } }),
-	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "skill_f": [3], "flag": { "skill": "1^==1&5^==1" }, "action": [10], "effect": { "char": { "height": "+10", "weight": "+10", "age_outside": "+2" } } }),
-	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-2" } } }),
-	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-2" } } }),
+	"4": Object.assign({}, model, { "name": "瘦弱", "type": 0, "group_f": "weight|muscle", "skill_f": [3], "up_list": [6], "keep_flag": { "6": "" }, "action": [10], "effect": { "char": { "weight": "-10", "age_outside": "-2:gender^^==3;-1" } } }),
+	"5": Object.assign({}, model, { "name": "強壯", "type": 0, "group_f": "muscle", "up_list": [7], "action": [10], "effect": { "char": { "weight": "+5", "age_outside": "+2:gender^^==2;+1" } } }),
+	"6": Object.assign({}, model, { "name": "嬌小", "type": 0, "group_f": "bodytype|height", "skill_f": [3, 5], "up_list": [8, 9], "flag": { "skill": "0^==1&2^==1|4^==1" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-3:gender^^==3;-2" } } }),
+	"7": Object.assign({}, model, { "name": "魁梧", "type": 0, "group_f": "bodytype|height|muscle", "skill_f": [3], "flag": { "skill": "1^==1&5^==1" }, "action": [10], "effect": { "char": { "height": "+10", "weight": "+10", "age_outside": "+3:gender^^==3;+2" } } }),
+	"8": Object.assign({}, model, { "name": "蘿莉", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==2", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-3:gender^^==1|==2&&height^^<150;-2" } } }),
+	"9": Object.assign({}, model, { "name": "正太", "type": 0, "group_f": "bodytype|height", "flag": { "skill": "6^==1", "gender": "==3", "age": "<30", "height": "<145" }, "action": [10], "effect": { "char": { "height": "-10", "weight": "-10", "age_outside": "-3" } } }),
 
 	// 50 ~ 特徵
 	"50": Object.assign({}, model, { "name": "精靈尖耳", "type": 0, "group_f": "ears", "action": [] }),
@@ -55,11 +55,11 @@ const skill_data = {
 	// 2000 特徵(性相關)
 	"2030": Object.assign({}, model, { "name": "未熟", "type": 0, "action": [8, 10], "effect": { "char": { "age_inside": "**0.55+6.5" } } }),	// 預設年齡為 10 ~ 40 歲，通過運算使結果落在 10 ~ 14 之間
 	"2031": Object.assign({}, model, { "name": "白虎", "type": 0, "flag": { "gender": "==2" }, "action": [8, 10] }),
-	"2040": Object.assign({}, model, { "name": "絕壁", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
-	"2041": Object.assign({}, model, { "name": "貧乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
-	"2042": Object.assign({}, model, { "name": "巨乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
-	"2043": Object.assign({}, model, { "name": "爆乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
-	"2044": Object.assign({}, model, { "name": "魔乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10] }),
+	"2040": Object.assign({}, model, { "name": "絕壁", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10], "effect": { "char": { "age_outside": "-2" } } }),
+	"2041": Object.assign({}, model, { "name": "貧乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10], "effect": { "char": { "age_outside": "-1" } } }),
+	"2042": Object.assign({}, model, { "name": "巨乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10], "effect": { "char": { "age_outside": "+1" } } }),
+	"2043": Object.assign({}, model, { "name": "爆乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10], "effect": { "char": { "age_outside": "+2" } } }),
+	"2044": Object.assign({}, model, { "name": "魔乳", "type": 0, "group_f": "chest", "flag": { "gender": "==2" }, "action": [8, 10], "effect": { "char": { "age_outside": "+4" } } }),
 
 	// 3000 ~ 5999 體質
 	"3000": Object.assign({}, model, { "name": "害怕疼痛", "type": 0, "skill_f": [3001], "action": [8, 10], "effect": { "char": { "age_inside": "-3" } } }),
@@ -96,72 +96,74 @@ const skill_data = {
 	// "6502": Object.assign({}, model, { "name": "精液中毒" }),
 
 	// 9000 ~ 9999 個性
-	// "9001": Object.assign({}, model, { "name": "軟弱" }),
-	// "9002": Object.assign({}, model, { "name": "堅強" }),
-	// "9003": Object.assign({}, model, { "name": "膽小" }),
-	// "9004": Object.assign({}, model, { "name": "勇敢" }),
-	// "9005": Object.assign({}, model, { "name": "粗心" }),
-	// "9006": Object.assign({}, model, { "name": "謹慎" }),
-	// "9007": Object.assign({}, model, { "name": "天真" }),
-	// "9008": Object.assign({}, model, { "name": "腹黑" }),
-	// "9009": Object.assign({}, model, { "name": "叛逆" }),
-	// "9010": Object.assign({}, model, { "name": "盲從" }),
-	// "9011": Object.assign({}, model, { "name": "坦率" }),
-	// "9012": Object.assign({}, model, { "name": "虛偽" }),
-	// "9013": Object.assign({}, model, { "name": "傲嬌" }),
-	// "9014": Object.assign({}, model, { "name": "文靜" }),
-	// "9015": Object.assign({}, model, { "name": "活潑" }),
-	// "9016": Object.assign({}, model, { "name": "高傲" }),
-	// "9017": Object.assign({}, model, { "name": "囂張" }),
-	// "9018": Object.assign({}, model, { "name": "自卑" }),
-	// "9019": Object.assign({}, model, { "name": "自戀" }),
-	// "9020": Object.assign({}, model, { "name": "不知羞恥" }),
-	// "9021": Object.assign({}, model, { "name": "害羞" }),
-	// "9022": Object.assign({}, model, { "name": "開放" }),
-	// "9023": Object.assign({}, model, { "name": "保守" }),
-	// "9024": Object.assign({}, model, { "name": "克制" }),
-	// "9025": Object.assign({}, model, { "name": "冷漠" }),
-	// "9026": Object.assign({}, model, { "name": "自我中心" }),
-	// "9027": Object.assign({}, model, { "name": "好奇心" }),
-	// "9028": Object.assign({}, model, { "name": "悲觀" }),
-	// "9029": Object.assign({}, model, { "name": "樂觀" }),
-	// "9030": Object.assign({}, model, { "name": "戒心重" }),
-	// "9032": Object.assign({}, model, { "name": "表演慾" }),
-	// "9033": Object.assign({}, model, { "name": "壓抑" }),
-	// "9034": Object.assign({}, model, { "name": "犧牲奉獻" }),
-	// "9035": Object.assign({}, model, { "name": "潔癖" }),
-	// "9036": Object.assign({}, model, { "name": "不怕髒" }),
-	// "9037": Object.assign({}, model, { "name": "邋遢" }),
-	// "9038": Object.assign({}, model, { "name": "厭男" }),
-	// "9039": Object.assign({}, model, { "name": "厭女" }),
-	// "9040": Object.assign({}, model, { "name": "平易近人" }),
-	// "9041": Object.assign({}, model, { "name": "威嚴" }),
-	// "9042": Object.assign({}, model, { "name": "鼓舞" }),
-	// "9043": Object.assign({}, model, { "name": "厭世" }),
-	// "9044": Object.assign({}, model, { "name": "重情" }),
-	// "9045": Object.assign({}, model, { "name": "忘恩負義" }),
-	// "9046": Object.assign({}, model, { "name": "母性" }),
-	// "9047": Object.assign({}, model, { "name": "父性" }),
-	// "9048": Object.assign({}, model, { "name": "慈愛" }),
-	// "9049": Object.assign({}, model, { "name": "善妒" }),
-	// "9050": Object.assign({}, model, { "name": "樂於分享" }),
-	// "9051": Object.assign({}, model, { "name": "調皮" }),
-	// "9052": Object.assign({}, model, { "name": "老實" }),
-	// "9053": Object.assign({}, model, { "name": "自信" }),
-	// "9054": Object.assign({}, model, { "name": "自我懷疑" }),
-	// "9055": Object.assign({}, model, { "name": "冷靜" }),
-	// "9056": Object.assign({}, model, { "name": "衝動" }),
-	// "9057": Object.assign({}, model, { "name": "沉默寡言" }),
-	// "9058": Object.assign({}, model, { "name": "面無表情" }),
-	// "9059": Object.assign({}, model, { "name": "波瀾不驚" }),
-	// "9060": Object.assign({}, model, { "name": "三無" }),
-	// "9061": Object.assign({}, model, { "name": "愛哭" }),
-	// "9062": Object.assign({}, model, { "name": "愛笑" }),
-	// "9063": Object.assign({}, model, { "name": "易怒" }),
-	// "9064": Object.assign({}, model, { "name": "情感豐富" }),
-	// "9065": Object.assign({}, model, { "name": "多話" }),
-	// "9066": Object.assign({}, model, { "name": "輕信" }),
-	// "9067": Object.assign({}, model, { "name": "多疑" }),
+	"9000": Object.assign({}, model, { "name": "軟弱", "type": 9, "group_f": "gut" }),
+	"9001": Object.assign({}, model, { "name": "堅強", "type": 9, "group_f": "gut" }),
+	"9002": Object.assign({}, model, { "name": "膽小", "type": 9, "group_f": "gut" }),
+	"9003": Object.assign({}, model, { "name": "勇敢", "type": 9, "group_f": "gut" }),
+	"9010": Object.assign({}, model, { "name": "衝動", "type": 9, "group_f": "care" }),
+	"9011": Object.assign({}, model, { "name": "粗心", "type": 9, "group_f": "care" }),
+	"9012": Object.assign({}, model, { "name": "冷靜", "type": 9, "group_f": "care" }),
+	"9059": Object.assign({}, model, { "name": "波瀾不驚", "type": 9, "group_f": "care" }),
+	"9013": Object.assign({}, model, { "name": "謹慎", "type": 9, "group_f": "care" }),
+	"9014": Object.assign({}, model, { "name": "戒心重", "type": 9, "group_f": "care" }),
+	"9051": Object.assign({}, model, { "name": "調皮", "type": 9, "group_f": "steady" }),
+	"9020": Object.assign({}, model, { "name": "天真", "type": 9, "group_f": "steady" }),
+	"9052": Object.assign({}, model, { "name": "老實", "type": 9, "group_f": "steady" }),
+	"9021": Object.assign({}, model, { "name": "穩重", "type": 9, "group_f": "steady" }),
+	"9030": Object.assign({}, model, { "name": "叛逆", "type": 9, "group_f": "cooperation" }),
+	"9031": Object.assign({}, model, { "name": "盲從", "type": 9, "group_f": "cooperation" }),
+	"9040": Object.assign({}, model, { "name": "坦率", "type": 9, "group_f": "honest" }),
+	"9041": Object.assign({}, model, { "name": "傲嬌", "type": 9, "group_f": "honest" }),
+	"9042": Object.assign({}, model, { "name": "腹黑", "type": 9, "group_f": "honest" }),
+	"9043": Object.assign({}, model, { "name": "虛偽", "type": 9, "group_f": "honest" }),
+	"9050": Object.assign({}, model, { "name": "內向", "type": 9, "group_f": "trovert" }),
+	"9051": Object.assign({}, model, { "name": "外向", "type": 9, "group_f": "trovert" }),
+	"9060": Object.assign({}, model, { "name": "自卑", "type": 9, "group_f": "modest" }),
+	"9061": Object.assign({}, model, { "name": "謙虛", "type": 9, "group_f": "modest" }),
+	"9062": Object.assign({}, model, { "name": "高傲", "type": 9, "group_f": "modest" }),
+	"9063": Object.assign({}, model, { "name": "囂張", "type": 9, "group_f": "modest" }),
+	"9070": Object.assign({}, model, { "name": "不知羞恥", "type": 9, "group_f": "shame" }),
+	"9071": Object.assign({}, model, { "name": "表演慾", "type": 9, "group_f": "shame" }),
+	"9072": Object.assign({}, model, { "name": "開放", "type": 9, "group_f": "shame" }),
+	"9073": Object.assign({}, model, { "name": "害羞", "type": 9, "group_f": "shame" }),
+	"9074": Object.assign({}, model, { "name": "保守", "type": 9, "group_f": "shame" }),
+	"9075": Object.assign({}, model, { "name": "壓抑", "type": 9, "group_f": "shame" }),
+	"9080": Object.assign({}, model, { "name": "自我中心", "type": 9, "group_f": "curiosity" }),
+	"9081": Object.assign({}, model, { "name": "自戀", "type": 9, "group_f": "curiosity" }),
+	"9082": Object.assign({}, model, { "name": "好奇心", "type": 9, "group_f": "curiosity" }),
+	"9083": Object.assign({}, model, { "name": "熱心", "type": 9, "group_f": "curiosity" }),
+	"9084": Object.assign({}, model, { "name": "犧牲奉獻", "type": 9, "group_f": "curiosity" }),
+	"9090": Object.assign({}, model, { "name": "厭世", "type": 9, "group_f": "view" }),
+	"9091": Object.assign({}, model, { "name": "悲觀", "type": 9, "group_f": "view" }),
+	"9092": Object.assign({}, model, { "name": "樂觀", "type": 9, "group_f": "view" }),
+	"9042": Object.assign({}, model, { "name": "鼓舞人心", "type": 9, "group_f": "view" }),
+	"9037": Object.assign({}, model, { "name": "邋遢", "type": 9, "group_f": "hygiene" }),
+	"9036": Object.assign({}, model, { "name": "不怕髒", "type": 9, "group_f": "hygiene" }),
+	"9035": Object.assign({}, model, { "name": "潔癖", "type": 9, "group_f": "hygiene" }),
+	"9041": Object.assign({}, model, { "name": "嚴厲", "type": 9, "group_f": "familiar" }),
+	"9025": Object.assign({}, model, { "name": "冷漠", "type": 9, "group_f": "familiar" }),
+	"9048": Object.assign({}, model, { "name": "嚴肅", "type": 9, "group_f": "familiar" }),
+	"9048": Object.assign({}, model, { "name": "溫柔", "type": 9, "group_f": "familiar" }),
+	"9040": Object.assign({}, model, { "name": "平易近人", "type": 9, "group_f": "familiar" }),
+	"9044": Object.assign({}, model, { "name": "重情", "type": 9, "group_f": "loyal" }),
+	"9045": Object.assign({}, model, { "name": "忘恩負義", "type": 9, "group_f": "loyal" }),
+	"9046": Object.assign({}, model, { "name": "母性", "type": 9, "group_f": "paternity" }),
+	"9047": Object.assign({}, model, { "name": "父性", "type": 9, "group_f": "paternity" }),
+	"9049": Object.assign({}, model, { "name": "自私", "type": 9, "group_f": "selfish" }),
+	"9049": Object.assign({}, model, { "name": "善妒", "type": 9, "group_f": "selfish" }),
+	"9050": Object.assign({}, model, { "name": "樂於分享", "type": 9, "group_f": "selfish" }),
+	"9054": Object.assign({}, model, { "name": "自我懷疑", "type": 9, "group_f": "confidence" }),
+	"9053": Object.assign({}, model, { "name": "自信", "type": 9, "group_f": "confidence" }),
+	"9067": Object.assign({}, model, { "name": "多疑", "type": 9, "group_f": "confidence" }),
+	"9066": Object.assign({}, model, { "name": "好騙", "type": 9, "group_f": "confidence" }),
+	"9057": Object.assign({}, model, { "name": "沉默寡言", "type": 9, "group_f": "gab" }),
+	"9058": Object.assign({}, model, { "name": "面無表情", "type": 9, "group_f": "emotion" }),
+	"9060": Object.assign({}, model, { "name": "三無", "type": 9, "group_f": "care|gab|emotion" }),
+	"9061": Object.assign({}, model, { "name": "愛哭", "type": 9 }),
+	"9062": Object.assign({}, model, { "name": "愛笑", "type": 9 }),
+	"9063": Object.assign({}, model, { "name": "易怒", "type": 9 }),
+	"9064": Object.assign({}, model, { "name": "情感豐富", "type": 9 }),
+	"9065": Object.assign({}, model, { "name": "多話", "type": 9, "group_f": "gab" }),
 
 	// 9900 ~ 個性(性相關)
 	// "9900": Object.assign({}, model, { "name": "重視貞操" }),
@@ -247,6 +249,7 @@ const skill_data = {
 };
 
 // 起始技能獲取條件及獲得機率列表(空白列表表示不獲取技能的機率)
+// 請注意不可設置相同機率，否則後者會覆蓋前者
 const base_skill_data = [
 	{ "flag": { "gender": "==2" }, skill_rate: { 40: [43000], 60: [] } },	// 女性 性經驗
 	{ "flag": { "gender": "==3" }, skill_rate: { 20: [43001], 80: [] } },	// 男性 性經驗
@@ -254,12 +257,12 @@ const base_skill_data = [
 	{ "flag": { "gender": "==3" }, skill_rate: { 20: [0], 30: [1], 50: [] } },	// 男性 身高
 	{ "flag": { "gender": "==2" }, skill_rate: { 40: [2], 20: [3], 40: [] } },	// 女性 體重
 	{ "flag": { "gender": "==3" }, skill_rate: { 30: [2], 20: [3], 50: [] } },	// 男性 體重
-	{ "flag": { "gender": "==2" }, skill_rate: { 20: [4], 20: [5], 60: [] } },	// 女性 肌肉
+	{ "flag": { "gender": "==2" }, skill_rate: { 20: [4, 5], 60: [] } },	// 女性 肌肉
 	{ "flag": { "gender": "==3" }, skill_rate: { 20: [4], 40: [5], 40: [] } },	// 男性 肌肉
 	{ "flag": { "gender": "!=1" }, skill_rate: { 5: [2030], 95: [] } },	// 未熟
 	{ "flag": { "age": "<12" }, skill_rate: { 80: [2030], 20: [] } },	// 未熟
 	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2031], 70: [] } },	// 女性 下體
-	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 50: [2031], 50: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
+	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 40: [2031], 60: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
 	{ "flag": { "gender": "==2" }, skill_rate: { 20: [2041, 2042], 1: [2043], 3: [2040, 2044], 766: [] } },	// 女性 胸部
 ]
 
@@ -407,14 +410,15 @@ module.exports = {
 	},
 
 	// 處理技能效果(依據技能調整屬性): 角色, 生效技能, 屬性值, 判斷項目
+	// 效果1:屬性1-1^^條件1-1&&屬性1-2^^條件1-2;效果2:屬性2^^條件2(條件規則同 flag / keep_flag)
 	setStatusByTalent: function (char, active_skill_list, value, item) {
 		for (let skill_id in active_skill_list) {
 			let effect = active_skill_list[skill_id];
 
 			if (adjust_str = effect[item]) {
-				let adjust_list = adjust_str.split("#");
+				let adjust_list = adjust_str.split(";");
 				for (let adjust_flag_str of adjust_list) {
-					let tmp = adjust_flag_str.split("?");
+					let tmp = adjust_flag_str.split(":");
 					let adjust = tmp[0];
 
 					if (tmp.length == 1) {
@@ -423,9 +427,12 @@ module.exports = {
 						console.log("依據 [" + this.getData(skill_id, "name") + "] 的效果，" + item + " 由 " + tmp_value + " 變為 " + value);
 						break;
 					} else {
+						let flag_str = tmp[1];
+						let flag_arr = flag_str.split("&&");
+
 						let flag_list = Object();
-						for (let i = 1; i < tmp.length; i++) {
-							let flag_data = tmp[i].split(":");
+						for (let tmp_flag_str of flag_arr) {
+							let flag_data = tmp_flag_str.split("^^");
 							flag_list[flag_data[0]] = flag_data[1];
 						}
 

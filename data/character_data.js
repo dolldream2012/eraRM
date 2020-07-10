@@ -138,6 +138,7 @@ module.exports = {
 
 			if (key == "skill") {	// eg. no_1^==1|no_2^==1&no_3^==0
 				let tmp_and_list = flag.split("&");
+				let skill_list = char["skill"];
 
 				for (let tmp_and_str of tmp_and_list) {
 					if (tmp_and_str.includes("|")) {
@@ -149,14 +150,26 @@ module.exports = {
 							let skill_no = tmp[0];
 							let skill_flag = tmp[1];
 
-							if (char["skill"][skill_no] == null && skill_flag == "!=1") {	// 不包含指定技能
-								tmp_pass = true;
-								break;
-							}
-							if (char["skill"][skill_no] == null) continue;
-							if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == true) {
-								tmp_pass = true;
-								break;
+							if (Array.isArray(skill_list)) {
+								if (skill_list.includes(skill_no * 1) == false &&  skill_flag == "!=1") {
+									tmp_pass = true;
+									break;
+								}
+								if (skill_list.includes(skill_no * 1) == false) continue;
+								if (skill_flag == "==1" || skill_flag == "<2") {	// 有技能且技能等級為1即可
+									tmp_pass = true;
+									break;
+								}
+							} else {
+								if (skill_list[skill_no] == null && skill_flag == "!=1") {	// 不包含指定技能
+									tmp_pass = true;
+									break;
+								}
+								if (skill_list[skill_no] == null) continue;
+								if (util.opeStr(skill_list[skill_no]["lv"] + skill_flag) == true) {
+									tmp_pass = true;
+									break;
+								}
 							}
 						}
 
@@ -166,9 +179,15 @@ module.exports = {
 						let skill_no = tmp[0];
 						let skill_flag = tmp[1];
 
-						if (char["skill"][skill_no] == null && skill_flag == "!=1") continue;	// 不包含指定技能
-						if (char["skill"][skill_no] == null) return false;
-						if (util.opeStr(char["skill"][skill_no]["lv"] + skill_flag) == false) return false;
+						if (Array.isArray(skill_list)) {
+							if (skill_list.includes(skill_no * 1) == false && skill_flag == "!=1") continue;	// 不包含指定技能
+							if (skill_list.includes(skill_no * 1) == false) return false;
+							if (skill_flag != "==1" && skill_flag != "<2") return false;	// 有技能但要求技能等級不為1
+						} else {
+							if (skill_list[skill_no] == null && skill_flag == "!=1") continue;	// 不包含指定技能
+							if (skill_list[skill_no] == null) return false;
+							if (util.opeStr(skill_list[skill_no]["lv"] + skill_flag) == false) return false;
+						}
 					}
 				}
 			} else if (key == "skill_compare") {	// { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_b"}
