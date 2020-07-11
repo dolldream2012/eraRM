@@ -103,21 +103,21 @@ const skill_data = {
 	"9010": Object.assign({}, model, { "name": "好騙", "type": 9, "group_f": "trust" }),
 	"9011": Object.assign({}, model, { "name": "衝動", "type": 9, "group_f": "trust" }),
 	"9012": Object.assign({}, model, { "name": "粗心", "type": 9, "group_f": "trust" }),
-	"9013": Object.assign({}, model, { "name": "謹慎", "type": 9, "group_f": "trust" }),
-	"9014": Object.assign({}, model, { "name": "多疑", "type": 9, "group_f": "trust" }),
+	"9013": Object.assign({}, model, { "name": "多疑", "type": 9, "group_f": "trust" }),
+	"9014": Object.assign({}, model, { "name": "謹慎", "type": 9, "group_f": "trust" }),
 	"9015": Object.assign({}, model, { "name": "戒心重", "type": 9, "group_f": "trust" }),
 	"9020": Object.assign({}, model, { "name": "調皮", "type": 9, "group_f": "steady" }),
 	"9021": Object.assign({}, model, { "name": "天真", "type": 9, "group_f": "steady" }),
-	"9022": Object.assign({}, model, { "name": "老實", "type": 9, "group_f": "steady" }),
-	"9023": Object.assign({}, model, { "name": "成熟", "type": 9, "group_f": "steady" }),
+	"9022": Object.assign({}, model, { "name": "成熟", "type": 9, "group_f": "steady" }),
 	"9030": Object.assign({}, model, { "name": "虛偽", "type": 9, "group_f": "cooperation" }),
 	"9031": Object.assign({}, model, { "name": "忘恩負義", "type": 9, "group_f": "cooperation" }),
 	"9032": Object.assign({}, model, { "name": "叛逆", "type": 9, "group_f": "cooperation" }),
 	"9033": Object.assign({}, model, { "name": "腹黑", "type": 9, "group_f": "cooperation" }),
 	"9034": Object.assign({}, model, { "name": "傲嬌", "type": 9, "group_f": "cooperation" }),
-	"9035": Object.assign({}, model, { "name": "坦率", "type": 9, "group_f": "cooperation" }),
-	"9036": Object.assign({}, model, { "name": "重情", "type": 9, "group_f": "cooperation" }),
-	"9037": Object.assign({}, model, { "name": "盲從", "type": 9, "group_f": "cooperation" }),
+	"9035": Object.assign({}, model, { "name": "老實", "type": 9, "group_f": "cooperation" }),
+	"9036": Object.assign({}, model, { "name": "坦率", "type": 9, "group_f": "cooperation" }),
+	"9037": Object.assign({}, model, { "name": "重情", "type": 9, "group_f": "cooperation" }),
+	"9038": Object.assign({}, model, { "name": "盲從", "type": 9, "group_f": "cooperation" }),
 	"9040": Object.assign({}, model, { "name": "自卑", "type": 9, "group_f": "modest" }),
 	"9041": Object.assign({}, model, { "name": "謙虛", "type": 9, "group_f": "modest" }),
 	"9042": Object.assign({}, model, { "name": "高傲", "type": 9, "group_f": "modest" }),
@@ -136,9 +136,10 @@ const skill_data = {
 	"9070": Object.assign({}, model, { "name": "厭世", "type": 9, "group_f": "view" }),
 	"9071": Object.assign({}, model, { "name": "悲觀", "type": 9, "group_f": "view" }),
 	"9072": Object.assign({}, model, { "name": "樂觀", "type": 9, "group_f": "view" }),
-	"9072": Object.assign({}, model, { "name": "鼓舞人心", "type": 9, "group_f": "view" }),
+	"9073": Object.assign({}, model, { "name": "鼓舞人心", "type": 9, "group_f": "view" }),
 	"9080": Object.assign({}, model, { "name": "邋遢", "type": 9, "group_f": "hygiene" }),
 	"9081": Object.assign({}, model, { "name": "不怕髒", "type": 9, "group_f": "hygiene" }),
+	"9082": Object.assign({}, model, { "name": "愛乾淨", "type": 9, "group_f": "hygiene" }),
 	"9082": Object.assign({}, model, { "name": "潔癖", "type": 9, "group_f": "hygiene" }),
 	"9090": Object.assign({}, model, { "name": "嚴厲", "type": 9, "group_f": "familiar" }),
 	"9091": Object.assign({}, model, { "name": "冷漠", "type": 9, "group_f": "familiar" }),
@@ -148,17 +149,17 @@ const skill_data = {
 	"9100": Object.assign({}, model, { "name": "母性", "type": 9, "group_f": "paternity" }),
 	"9101": Object.assign({}, model, { "name": "父性", "type": 9, "group_f": "paternity" }),
 	"9110": Object.assign({}, model, { "name": "自私", "type": 9, "group_f": "selfish" }),
-	"9112": Object.assign({}, model, { "name": "善妒", "type": 9, "group_f": "selfish" }),
-	"9113": Object.assign({}, model, { "name": "樂於分享", "type": 9, "group_f": "selfish" }),
+	"9111": Object.assign({}, model, { "name": "善妒", "type": 9, "group_f": "selfish" }),
+	"9112": Object.assign({}, model, { "name": "樂於分享", "type": 9, "group_f": "selfish" }),
 	"9120": Object.assign({}, model, { "name": "自我懷疑", "type": 9, "group_f": "confidence" }),
 	"9121": Object.assign({}, model, { "name": "自信", "type": 9, "group_f": "confidence" }),
 	"9130": Object.assign({}, model, { "name": "冷靜", "type": 9, "group_f": "calm", "up_list": [9800] }),
 	"9131": Object.assign({}, model, { "name": "容易緊張", "type": 9, "group_f": "calm" }),
-	"9140": Object.assign({}, model, { "name": "面無表情", "type": 9, "group_f": "emotion", "up_list": [9800] }),
-	"9141": Object.assign({}, model, { "name": "愛哭", "type": 9, "group_f": "emotion", "up_list": [9144] }),
-	"9142": Object.assign({}, model, { "name": "愛笑", "type": 9, "group_f": "emotion", "up_list": [9144] }),
-	"9143": Object.assign({}, model, { "name": "易怒", "type": 9, "group_f": "emotion", "up_list": [9144] }),
-	"9144": Object.assign({}, model, { "name": "情感豐富", "type": 9, "group_f": "emotion", "flag": { "skill": "9141^==1&9142^==1&9143^==1" } }),
+	"9140": Object.assign({}, model, { "name": "面無表情", "type": 9, "skill_f": [9141, 9142, 9143, 9144], "up_list": [9800] }),
+	"9141": Object.assign({}, model, { "name": "愛哭", "type": 9, "skill_f": [9140], "up_list": [9144] }),
+	"9142": Object.assign({}, model, { "name": "愛笑", "type": 9, "skill_f": [9140], "up_list": [9144] }),
+	"9143": Object.assign({}, model, { "name": "易怒", "type": 9, "skill_f": [9140], "up_list": [9144] }),
+	"9144": Object.assign({}, model, { "name": "情感豐富", "type": 9, "skill_f": [9140], "flag": { "skill": "9141^==1&9142^==1&9143^==1" } }),
 	"9150": Object.assign({}, model, { "name": "沉默寡言", "type": 9, "group_f": "gab", "up_list": [9800] }),
 	"9151": Object.assign({}, model, { "name": "多話", "type": 9, "group_f": "gab" }),
 	"9800": Object.assign({}, model, { "name": "三無", "type": 9, "group_f": "calm|gab|emotion", "flag": { "skill": "9130^==1&9140^==1&9150^==1" } }),
@@ -259,9 +260,41 @@ const base_skill_data = [
 	{ "flag": { "gender": "==3" }, skill_rate: { 20: [4], 40: [5], 40: [] } },	// 男性 肌肉
 	{ "flag": { "gender": "!=1" }, skill_rate: { 5: [2030], 95: [] } },	// 未熟
 	{ "flag": { "age": "<12" }, skill_rate: { 80: [2030], 20: [] } },	// 未熟
-	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2031], 70: [] } },	// 女性 下體
+	{ "flag": { "gender": "==2" }, skill_rate: { 30: [2031], 70: [] } },	// 女性 白虎
 	{ "flag": { "gender": "==2", "skill": "0^==1|4^==1|6^==1|8^==1" }, skill_rate: { 40: [2031], 60: [] } },	// 女性 下體(矮|瘦|瘦弱|蘿莉)
 	{ "flag": { "gender": "==2" }, skill_rate: { 20: [2041, 2042], 1: [2043], 3: [2040, 2044], 766: [] } },	// 女性 胸部
+	{ skill_rate: { 5: [9000, 9001, 9002, 9003], 95: [] } },	// 軟弱, 堅強, 膽小, 勇敢
+	{ skill_rate: { 2: [9010, 9015], 3: [9011, 9014], 5: [9012, 9013], 90: [] } },	// 2: 好騙, 戒心重; 3: 衝動, 謹慎; 5: 粗心, 多疑
+	{ skill_rate: { 5: [9020, 9021, 9022], 95: [] } },	// 調皮, 天真, 成熟
+	{ "flag": { "age": "<15" }, skill_rate: { 20: [9020, 9021], 80: [] } },	// 調皮, 天真
+	{ "flag": { "age": ">14" }, skill_rate: { 10: [9022], 95: [] } },	// 成熟
+	{ skill_rate: { 5: [9030, 9031, 9032, 9033, 9034, 9035, 9036, 9037, 9038], 95: [] } },	// 虛偽, 忘恩負義, 叛逆, 腹黑, 傲嬌, 老實, 坦率, 重情, 盲從
+	{ "flag": { "age": "<15" }, skill_rate: { 20: [9035, 9036, 9038], 80: [] } },	// 老實, 坦率, 盲從
+	{ "flag": { "age": ">12|<18" }, skill_rate: { 30: [9032], 80: [] } },	// 叛逆
+	{ "flag": { "age": ">14" }, skill_rate: { 2: [9030, 9033, 9038], 3: [9031, 9032], 5: [9034, 9035, 9036, 9037], 80: [] } },	// 2: 虛偽, 腹黑, 盲從; 3: 忘恩負義, 叛逆; 5: 傲嬌, 老實, 坦率, 重情
+	{ skill_rate: { 2: [9040, 9043], 3: [9041, 9042], 95: [] } },	// 2: 自卑, 囂張; 3: 謙虛, 高傲
+	{ "flag": { "gender": "==2" }, skill_rate: { 2: [9055], 3: [9050, 9054], 5: [9051, 9053], 10: [9052], 80: [] } },	// 2: 壓抑; 3: 不知羞恥, 保守; 5: 表演慾, 害羞, 10: 開放
+	{ "flag": { "gender": "==3" }, skill_rate: { 2: [9050, 9055], 3: [9051, 9054], 5: [9052, 9053], 90: [] } },	// 2: 不知羞恥, 壓抑; 3: 表演慾, 保守; 5: 開放, 害羞
+	{ "flag": { "age": "<12" }, skill_rate: { 10: [9050], 15: [9051], 25: [9052], 50: [] } },	// 10: 不知羞恥, 15: 表演慾, 25: 開放
+	{ skill_rate: { 2: [9060, 9061, 9064], 3: [9062, 9063], 95: [] } },	// 2: 自我中心, 自戀, 犧牲奉獻; 3: 好奇心, 熱心
+	{ skill_rate: { 2: [9070, 9073], 3: [9071, 9072], 95: [] } },	// 2: 厭世, 鼓舞人心; 3: 悲觀, 樂觀
+	{ "flag": { "age": "<15" }, skill_rate: { 10: [9072, 9073], 80: [] } },	// 樂觀, 鼓舞人心
+	{ "flag": { "age": ">50" }, skill_rate: { 10: [9070, 9071], 80: [] } },	// 悲觀, 厭世
+	{ skill_rate: { 5: [9080, 9083], 10: [9081, 9082], 85: [] } },	// 5: 邋遢, 潔癖; 10: 不怕髒, 愛乾淨
+	{ skill_rate: { 10: [9090, 9091], 80: [] } },	// 嚴厲, 冷漠, 嚴肅, 溫柔, 平易近人
+	{ skill_rate: { 5: [9091, 9093, 9094], 95: [] } },	// 冷漠, 溫柔, 平易近人
+	{ "flag": { "age": ">20" }, skill_rate: { 5: [9090], 80: [] } },	// 嚴厲
+	{ "flag": { "age": ">12" }, skill_rate: { 5: [9092], 80: [] } },	// 嚴肅
+	{ "flag": { "gender": "==2", "age": ">20" }, skill_rate: { 5: [9100], 95: [] } },	// 母性
+	{ "flag": { "gender": "==3", "age": ">20" }, skill_rate: { 5: [9101], 95: [] } },	// 父性
+	{ skill_rate: { 5: [9110, 9111, 9112], 95: [] } },	// 自私, 善妒, 樂於分享
+	{ skill_rate: { 5: [9120, 9121], 95: [] } },	// 自我懷疑, 自信
+	{ skill_rate: { 5: [9130, 9131], 95: [] } },	// 冷靜, 容易緊張
+	{ skill_rate: { 5: [9140], 95: [] } },	// 面無表情
+	{ skill_rate: { 5: [9141], 95: [] } },	// 愛哭
+	{ skill_rate: { 5: [9142], 95: [] } },	// 愛笑
+	{ skill_rate: { 5: [9143], 95: [] } },	// 易怒
+	{ skill_rate: { 5: [9150, 9151], 95: [] } },	// 沉默寡言, 多話
 ]
 
 module.exports = {
