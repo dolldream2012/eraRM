@@ -1,5 +1,5 @@
-// const util = global.util;
-const char_data = global.char_data;
+// const char_data = global.char_data;
+const char_data = global.char_data = require('../data/character_data.js');
 
 // 模版
 const model = {
@@ -323,12 +323,31 @@ module.exports = {
 
 	// 技能升級
 	upgSkill: function (char) {
+		// 移除角色無法獲得技能
+		for (let skill_id in char.skill) {
+			let flag_list = new Object();
+			for (let key in skill_data[skill_id]["flag"]) {
+				if (key != "skill") flag_list[key] = skill_data[skill_id]["flag"][key];
+			}
+
+			if (char_data.chkCharFlag(char, flag_list) == false) {
+				delete char.skill[skill_id];
+				console.log("由於角色條件不符，移除 [" + skill_data[skill_id]["name"] + "]");
+			}
+		}
+
 		for (let skill_id in char.skill) {	// 移除衝突技能
 			for (let skill_no of skill_data[skill_id]["skill_f"]) {	// 遍歷技能的衝突技能
 				if (char.skill[skill_no]) {	// 存在衝突技能
 					// 抵消未升級之衝突技能
-					if (char.skill[skill_id]["lv"] == 1 && char.skill[skill_id]["exp"] == 0) delete char.skill[skill_id];
-					if (char.skill[skill_no]["lv"] == 1 && char.skill[skill_no]["exp"] == 0) delete char.skill[skill_no];
+					if (char.skill[skill_id]["lv"] == 1 && char.skill[skill_id]["exp"] == 0) {
+						delete char.skill[skill_id];
+						console.log("由於存在衝突屬性，移除 [" + skill_data[skill_id]["name"] + "]");
+					}
+					if (char.skill[skill_no]["lv"] == 1 && char.skill[skill_no]["exp"] == 0) {
+						delete char.skill[skill_no];
+						console.log("由於存在衝突屬性，移除 [" + skill_data[skill_no]["name"] + "]");
+					}
 				}
 			}
 		}
@@ -343,32 +362,33 @@ module.exports = {
 
 					if (this.chkEnableSkill(char, skill_no)) {	// 滿足獲得上位技能條件
 						char.skill[skill_no] = this.initSkill(skill_no);
+						console.log("[" + skill_data[skill_id]["name"] + "] 升級為 [" + skill_data[skill_no]["name"] + "]");
 
 						isUpgrade = true;
 					}
 				}
 			}
-		} while (isUpgrade);	// 如果技能升級，重新遍歷技能至無法升級為止
 
-		// 移除下位技能
-		for (let skill_id in char.skill) {
-			for (let skill_no of skill_data[skill_id]["up_list"]) {	// 遍歷技能的上位技能
-				if (char.skill[skill_no]) {
-					if (skill_data[skill_id]["keep_flag"]) {	// 存在保留技能條件
-						let keep_flag = skill_data[skill_id]["keep_flag"][skill_no];
+			// 移除下位技能
+			for (let skill_id in char.skill) {
+				for (let skill_no of skill_data[skill_id]["up_list"]) {	// 遍歷技能的上位技能
+					if (char.skill[skill_no]) {
+						if (skill_data[skill_id]["keep_flag"]) {	// 存在保留技能條件
+							let keep_flag = skill_data[skill_id]["keep_flag"][skill_no];
 
-						if (keep_flag == "" || keep_flag == 0) {	// 未填寫條件表示不需移除下位技能
-						} else if (typeof keep_flag == "undefined") {	// 如果已擁有上位技能，移除上位技能
-							delete char.skill[skill_id];
-						} else if (this.chkEnableSkill(char, null, keep_flag) == false) {	// 反向利用 chkEnableSkill 的判斷條件，如果符合則保留技能
-							delete char.skill[skill_id];
+							if (keep_flag == "" || keep_flag == 0) {	// 未填寫條件表示不需移除下位技能
+							} else if (typeof keep_flag == "undefined") {	// 如果已擁有上位技能，移除上位技能
+								delete char.skill[skill_id];
+							} else if (this.chkEnableSkill(char, null, keep_flag) == false) {	// 反向利用 chkEnableSkill 的判斷條件，如果符合則保留技能
+								delete char.skill[skill_id];
+							}
+						} else {
+							delete char.skill[skill_id];	// 如果已擁有上位技能，移除上位技能
 						}
-					} else {
-						delete char.skill[skill_id];	// 如果已擁有上位技能，移除上位技能
 					}
 				}
 			}
-		}
+		} while (isUpgrade);	// 如果技能升級，重新遍歷技能至無法升級為止
 	},
 
 	// 檢查可否獲得技能／是否滿足技能升級條件: 角色資料, 技能編號, 技能獲取條件
@@ -378,24 +398,29 @@ module.exports = {
 
 		// 檢查是否存在互斥技能
 		if (skill_no && Object.keys(char.skill).length > 0) {
-			// 檢查是否存在互斥技能群組(已擁有同類型屬性)
-			let group_list_1 = skill_data[skill_no]["group_f"].split("|");
-			for (let key in char.skill) {
-				let tmp_skill_id = (isArr) ? char.skill[key] : key;
-				let group_list_2 = skill_data[tmp_skill_id]["group_f"].split("|");
+			if (char_data.chkCharHasStatus(char, "skill", skill_no) == false) {	// 檢查角色是否已擁有技能
+				// 檢查是否存在互斥技能群組(已擁有同類型屬性)
+				let group_list_1 = skill_data[skill_no]["group_f"].split("|");
+				for (let key in char.skill) {
+					let tmp_skill_id = (isArr) ? char.skill[key] : key;
+					let group_list_2 = skill_data[tmp_skill_id]["group_f"].split("|");
 
-				if (group_list_1.some(group => group_list_2.includes(group))) {	// 存在相同技能群組
-					if (skill_data[tmp_skill_id]["up_list"].includes(skill_no) == false) return false;	// 檢查技能並非已擁有技能的上位技能
+					if (group_list_1.some(group => group_list_2.includes(group))) {	// 存在相同技能群組
+						if (skill_data[tmp_skill_id]["up_list"].includes(skill_no) == false) {	// 檢查技能並非已擁有技能的上位技能
+							console.log("角色 [" + char.name + "] 已擁有 [" + skill_data[tmp_skill_id]["name"] + "]，無法獲得 [" + skill_data[skill_no]["name"] + "]");
+							return false;
+						}
+					}
 				}
-			}
 
-			// 檢查是否存在互斥技能
-			let skill_f = skill_data[skill_no]["skill_f"];
-			for (let tmp_skill_no of skill_f) {
-				if (isArr) {	// 技能尚未初始化
-					if (char.skill.includes(tmp_skill_no)) return false;
-				} else {
-					if (char.skill[tmp_skill_no]) return false;
+				// 檢查是否存在互斥技能
+				let skill_f = skill_data[skill_no]["skill_f"];
+				for (let tmp_skill_no of skill_f) {
+					if (isArr) {	// 技能尚未初始化
+						if (char.skill.includes(tmp_skill_no)) return false;
+					} else {
+						if (char.skill[tmp_skill_no]) return false;
+					}
 				}
 			}
 		}

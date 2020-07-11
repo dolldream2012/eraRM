@@ -128,12 +128,13 @@ module.exports = {
 		for (let key in flag_list) {
 			let flag = flag_list[key];
 
-			if (key == "gender") {	// 判斷角色性別時，若條件僅指定為女性或男性，則默認扶他符合條件(若指定為女性或男性但不指定扶他，則不處理)
-				if (flag == "==2" || flag == "==3") flag += "|==0";
+			if (typeof char[key] != "object" && this.chkCharHasStatus(char, key) == false) {
+				console.log("角色尚未設定 [" + key + "] 屬性，無法判斷條件");
+				return false;	// 未設定屬性，無法判斷條件
 			}
 
-			if ((key == "age" && char.age == -1) || (key == "age_t" && char.age_t == -1)) {
-				return false;	// 未設定年齡，無從判斷條件
+			if (key == "gender") {	// 判斷角色性別時，若條件僅指定為女性或男性，則默認扶他符合條件(若指定為女性或男性但不指定扶他，則不處理)
+				if (flag == "==2" || flag == "==3") flag += "|==0";
 			}
 
 			if (key == "skill") {	// eg. no_1^==1|no_2^==1&no_3^==0
@@ -150,23 +151,20 @@ module.exports = {
 							let skill_no = tmp[0];
 							let skill_flag = tmp[1];
 
-							if (Array.isArray(skill_list)) {
-								if (skill_list.includes(skill_no * 1) == false &&  skill_flag == "!=1") {
-									tmp_pass = true;
-									break;
-								}
-								if (skill_list.includes(skill_no * 1) == false) continue;
-								if (skill_flag == "==1" || skill_flag == "<2") {	// 有技能且技能等級為1即可
-									tmp_pass = true;
-									break;
+							if (this.chkCharHasStatus(char, "skill", skill_no) == true) {	// 檢查是否擁有技能
+								if (Array.isArray(skill_list)) {	// 技能尚未初始化
+									if (skill_flag == "==1" || skill_flag == "<2") {	// 條件為技能等級為1
+										tmp_pass = true;
+										break;
+									}
+								} else {
+									if (util.opeStr(skill_list[skill_no]["lv"] + skill_flag) == true) {
+										tmp_pass = true;
+										break;
+									}
 								}
 							} else {
-								if (skill_list[skill_no] == null && skill_flag == "!=1") {	// 不包含指定技能
-									tmp_pass = true;
-									break;
-								}
-								if (skill_list[skill_no] == null) continue;
-								if (util.opeStr(skill_list[skill_no]["lv"] + skill_flag) == true) {
+								if (skill_flag == "!=1") {	// 條件為不擁有技能
 									tmp_pass = true;
 									break;
 								}
@@ -179,18 +177,18 @@ module.exports = {
 						let skill_no = tmp[0];
 						let skill_flag = tmp[1];
 
-						if (Array.isArray(skill_list)) {
-							if (skill_list.includes(skill_no * 1) == false && skill_flag == "!=1") continue;	// 不包含指定技能
-							if (skill_list.includes(skill_no * 1) == false) return false;
-							if (skill_flag != "==1" && skill_flag != "<2") return false;	// 有技能但要求技能等級不為1
+						if (this.chkCharHasStatus(char, "skill", skill_no) == true) {	// 檢查是否擁有技能
+							if (Array.isArray(skill_list)) {
+								if (skill_flag != "==1" && skill_flag != "<2") return false;	// 有技能但要求技能等級不為1
+							} else {
+								if (util.opeStr(skill_list[skill_no]["lv"] + skill_flag) == false) return false;
+							}
 						} else {
-							if (skill_list[skill_no] == null && skill_flag == "!=1") continue;	// 不包含指定技能
-							if (skill_list[skill_no] == null) return false;
-							if (util.opeStr(skill_list[skill_no]["lv"] + skill_flag) == false) return false;
+							if (skill_flag != "!=1") return false;	// 條件並非不擁有技能
 						}
 					}
 				}
-			} else if (key == "skill_compare") {	// { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_b"}
+			} else if (key == "skill_compare") {	// { "skill_compare" : "skill_no_1^skill_no_2^skill_1<skill_2"}
 				let tmp_and_list = flag.split("&");
 
 				for (let tmp_list of tmp_and_list) {
@@ -248,5 +246,36 @@ module.exports = {
 		}
 
 		return true;
+	},
+
+	// 檢查角色是否擁有特定屬性
+	chkCharHasStatus: function (char, item, item_no) {
+		let status = char[item];
+
+		if (item_no == null) {
+			if (status) {
+				if (typeof status == "object") return Object.keys(status).length > 0;
+				else if (typeof status == "string") return status != "";
+				else if (typeof status == "number") return status != -1;
+			} else {
+				return false;
+			}
+		} else {
+			if (typeof status == "object") {
+				if (Array.isArray(status)) {
+					if (typeof item_no == "number") {
+						for (var tmp_item_no of status) if (tmp_item_no * 1 == item_no * 1) return true;
+
+						return false;
+					} else {
+						return status.includes(item_no);
+					}
+				} else {
+					return (status) ? true : false;
+				}
+			} else {
+				return status == item_no;
+			}
+		}
 	}
 }
