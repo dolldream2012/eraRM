@@ -148,7 +148,7 @@ module.exports = {
 						let tmp_or_list = tmp_and_str.split("|");
 						for (let tmp_or_str of tmp_or_list) {
 							let tmp = tmp_or_str.split("^");
-							let skill_no = tmp[0];
+							let skill_no = tmp[0] * 1;
 							let skill_flag = tmp[1];
 
 							if (this.chkCharHasStatus(char, "skill", skill_no) == true) {	// 檢查是否擁有技能
@@ -174,7 +174,7 @@ module.exports = {
 						if (tmp_pass == false) return false;
 					} else {
 						let tmp = tmp_and_str.split("^");
-						let skill_no = tmp[0];
+						let skill_no = tmp[0] * 1;
 						let skill_flag = tmp[1];
 
 						if (this.chkCharHasStatus(char, "skill", skill_no) == true) {	// 檢查是否擁有技能
@@ -263,15 +263,15 @@ module.exports = {
 		} else {
 			if (typeof status == "object") {
 				if (Array.isArray(status)) {
-					if (typeof item_no == "number") {
+					if (isNaN(item_no * 1)) {	// 檢查 item_no 是否為數字
+						return status.includes(item_no);
+					} else {
 						for (var tmp_item_no of status) if (tmp_item_no * 1 == item_no * 1) return true;
 
 						return false;
-					} else {
-						return status.includes(item_no);
 					}
 				} else {
-					return (status) ? true : false;
+					return (status[item_no]) ? true : false;
 				}
 			} else {
 				return status == item_no;
