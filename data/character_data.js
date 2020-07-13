@@ -112,7 +112,7 @@ module.exports = {
 			let flag = flag_list[key];
 
 			if (typeof char[key] != "object" && this.chkCharHasStatus(char, key) == false) {
-				console.log("角色尚未設定 [" + key + "] 屬性，無法判斷條件");
+				// console.log("角色尚未設定 [" + key + "] 屬性，無法判斷條件");
 				return false;	// 未設定屬性，無法判斷條件
 			}
 
