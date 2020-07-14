@@ -29,7 +29,7 @@ const model = {
 	// eg. "height": "+10:gender^^==3;+5" : 男性身高+10，非男性身高+5
 	// 達成條件1後立即處理效果1，不會再進入條件2的判斷和效果2的發動，因此優先級較高的效果需向前放置
 	, "exp": []	// 升級所需經驗
-	, "enable": 9	// 技能開關(0: 關閉, 1: 啟動, 8: 禁止開關, 9: 無開關效果)
+	, "enable": "S"	// 技能開關(N: 關閉, Y: 啟動, F: 禁止開關, S: 無開關效果)
 };
 
 // 技能列表
@@ -553,7 +553,7 @@ module.exports = {
 			delete data["max_lv"];
 
 			// 技能開關
-			if (data["enable"] == 8) {
+			if (data["enable"] == "F") {
 				str += "(禁止開關)";
 			}
 			delete data["enable"];
@@ -750,5 +750,5 @@ module.exports = {
 	},
 }
 
-module.exports.disSkillData();
-process.exit();
+// module.exports.disSkillData();
+// process.exit();
