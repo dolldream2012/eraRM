@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `u308774430_game`.`skill` (
     , `type_sub` TINYTEXT NULL
     , `max_lv` TINYINT(2) UNSIGNED NOT NULL DEFAULT '1'
     , `up_list` TINYTEXT NULL
-    , `group_f` VARCHAR(20) NULL
-    , `skill_f` TEXT NULL
+    , `group_f` TINYTEXT NULL
+    , `skill_f` TINYTEXT NULL
     , `flag` TINYTEXT NULL
     , `cost` TINYTEXT NULL
     , `effect` TEXT NULL
