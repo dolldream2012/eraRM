@@ -137,7 +137,7 @@ let skill_data = {
     "9080": Object.assign({}, model, { "name": "邋遢", "type": 9, "group_f": "hygiene", "effect": { "char": { "age_inside": "-2" } } }),
     "9081": Object.assign({}, model, { "name": "不怕髒", "type": 9, "group_f": "hygiene", "effect": { "char": { "age_inside": "-1" } } }),
     "9082": Object.assign({}, model, { "name": "愛乾淨", "type": 9, "group_f": "hygiene", "effect": { "char": { "age_inside": "+1" } } }),
-    "9082": Object.assign({}, model, { "name": "潔癖", "type": 9, "group_f": "hygiene", "effect": { "char": { "age_inside": "+2" } } }),
+    "9083": Object.assign({}, model, { "name": "潔癖", "type": 9, "group_f": "hygiene", "effect": { "char": { "age_inside": "+2" } } }),
     "9090": Object.assign({}, model, { "name": "嚴厲", "type": 9, "group_f": "familiar", "effect": { "char": { "age_inside": "+3" } } }),
     "9091": Object.assign({}, model, { "name": "冷漠", "type": 9, "group_f": "familiar", "effect": { "char": { "age_inside": "+2" } } }),
     "9092": Object.assign({}, model, { "name": "嚴肅", "type": 9, "group_f": "familiar", "effect": { "char": { "age_inside": "+1" } } }),
